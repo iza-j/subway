@@ -12,5 +12,6 @@ public class Main {
 
         //HW #12
         Station ratajskiego = new Station(2101, "plac Ratajskiego");
+        Station ogrody = new Station(7777777, "Ogrody");
     }
 }
