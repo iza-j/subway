@@ -11,7 +11,7 @@ public class Main {
         System.out.println("\nTickets please!!");
 
         //HW #12
-        Station ratajskiego = new Station(2101, "plac Cyryla Ratajskiego");
+        Station ratajskiego = new Station(2101, "plac Ratajskiego");
         Station poznanGlowny = new Station(104, "Poznań Główny....... POZNAŃ MAIN STATION!!!");
         Station srodka = new Station(666, "Rondo Śródka");
     }
