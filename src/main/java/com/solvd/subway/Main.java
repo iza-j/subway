@@ -14,5 +14,6 @@ public class Main {
         Station ratajskiego = new Station(2101, "plac Cyryla Ratajskiego");
         Station poznanGlowny = new Station(104, "Poznań Główny....... POZNAŃ MAIN STATION!!!");
         Station srodka = new Station(666, "Rondo Śródka");
+        Station ogrody = new Station(7777777, "Ogrody");
     }
 }
