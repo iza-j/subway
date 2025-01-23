@@ -8,25 +8,19 @@ USE subway;
 #################################################
 CREATE TABLE station (
 	id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	name VARCHAR(255) NOT NULL,
-    
-	UNIQUE INDEX id_UNIQUE (id ASC) VISIBLE)
-;
+	name VARCHAR(255) NOT NULL
+);
 
 
 CREATE TABLE zone (
 	name VARCHAR(255) NOT NULL PRIMARY KEY,
-	base_fare_one_minute DECIMAL NOT NULL CHECK (base_fare_one_minute >= 0),
-    
-	UNIQUE INDEX name_UNIQUE (name ASC) VISIBLE)
-;
+	base_fare_one_minute DECIMAL NOT NULL CHECK (base_fare_one_minute >= 0)
+);
 
 
 CREATE TABLE line (
-	name VARCHAR(255) NOT NULL PRIMARY KEY,
-    
-	UNIQUE INDEX name_UNIQUE (name ASC) VISIBLE)
-;
+	name VARCHAR(255) NOT NULL PRIMARY KEY
+);
 
 
 CREATE TABLE route_section (
@@ -34,23 +28,15 @@ CREATE TABLE route_section (
 	departure_station_id BIGINT UNSIGNED NOT NULL,
 	destination_station_id BIGINT UNSIGNED NOT NULL,
 	minutes BIGINT UNSIGNED NOT NULL,
-	zone_name VARCHAR(255) NULL,
-    
-	UNIQUE INDEX id_UNIQUE (id ASC) VISIBLE,
-	INDEX id_idx (departure_station_id ASC) VISIBLE,
-	INDEX id_idx1 (destination_station_id ASC) VISIBLE,
-    INDEX name_idx (zone_name ASC) VISIBLE,
+	zone_name VARCHAR(255) NOT NULL,
     
 	CONSTRAINT route_section_fk_departure_station_id FOREIGN KEY (departure_station_id) REFERENCES station (id)
-		ON DELETE CASCADE
-		ON UPDATE NO ACTION,
+		ON DELETE CASCADE,
 	CONSTRAINT route_section_fk_destination_station_id FOREIGN KEY (destination_station_id) REFERENCES station (id)
-		ON DELETE CASCADE
-		ON UPDATE NO ACTION,
+		ON DELETE CASCADE,
 	CONSTRAINT route_section_fk_zone_name FOREIGN KEY (zone_name) REFERENCES zone (name)
-		ON DELETE SET NULL
-		ON UPDATE NO ACTION)
-;
+		ON DELETE RESTRICT
+);
 
 
 CREATE TABLE line_has_route_section (
@@ -58,15 +44,11 @@ CREATE TABLE line_has_route_section (
 	route_section_id BIGINT UNSIGNED NOT NULL,
 	section_no BIGINT UNSIGNED NOT NULL,
     
-	INDEX id_idx (route_section_id ASC) VISIBLE,
-    
 	CONSTRAINT line_has_route_section_fk_line_name FOREIGN KEY (line_name) REFERENCES line (name)
-		ON DELETE CASCADE
-		ON UPDATE NO ACTION,
+		ON DELETE CASCADE,
 	CONSTRAINT line_has_route_section_fk_route_section_id FOREIGN KEY (route_section_id) REFERENCES route_section (id)
 		ON DELETE CASCADE
-		ON UPDATE NO ACTION)
-;
+);
 
 
 #################################################
@@ -74,25 +56,19 @@ CREATE TABLE line_has_route_section (
 #################################################
 CREATE TABLE discount (
 	name VARCHAR(255) NOT NULL PRIMARY KEY,
-	reduction_percentage DECIMAL NOT NULL CHECK (reduction_percentage >= 0),
-    
-	UNIQUE INDEX name_UNIQUE (name ASC) VISIBLE)
-;
+	reduction_percentage DECIMAL NOT NULL CHECK (reduction_percentage >= 0)
+);
 
 
 CREATE TABLE transit_pass (
 	name VARCHAR(255) NOT NULL PRIMARY KEY,
-	outermost_zone_name VARCHAR(255) NULL,
+	outermost_zone_name VARCHAR(255) NOT NULL,
 	number_of_days BIGINT UNSIGNED NOT NULL,
 	price DECIMAL NOT NULL CHECK (price >= 0),
     
-	UNIQUE INDEX name_UNIQUE (name ASC) VISIBLE,
-	INDEX name_idx (outermost_zone_name ASC) VISIBLE,
-    
 	CONSTRAINT transit_pass_fk_zone_name FOREIGN KEY (outermost_zone_name) REFERENCES zone (name)
-		ON DELETE SET NULL
-		ON UPDATE NO ACTION)
-;
+		ON DELETE RESTRICT
+);
 
 
 CREATE TABLE passenger (
@@ -103,17 +79,11 @@ CREATE TABLE passenger (
 	transit_pass_name VARCHAR(255) NULL,
 	pass_validity_starting_day DATE NULL,
     
-	UNIQUE INDEX id_UNIQUE (id ASC) VISIBLE,
-	INDEX name_idx (discount_name ASC) VISIBLE,
-	INDEX name_idx1 (transit_pass_name ASC) VISIBLE,
-    
 	CONSTRAINT passenger_fk_discount_name FOREIGN KEY (discount_name) REFERENCES discount (name)
-		ON DELETE SET NULL
-		ON UPDATE NO ACTION,
+		ON DELETE SET NULL,
 	CONSTRAINT passenger_fk_transit_pass_name FOREIGN KEY (transit_pass_name) REFERENCES transit_pass (name)
 		ON DELETE SET NULL
-		ON UPDATE NO ACTION)
-;
+);
 
 
 #################################################
@@ -122,39 +92,28 @@ CREATE TABLE passenger (
 CREATE TABLE worker (
 	id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	name VARCHAR(255) NOT NULL,
-	hourly_wage DECIMAL NULL CHECK (hourly_wage >= 0),
-    
-	UNIQUE INDEX id_UNIQUE (id ASC) VISIBLE)
-;
+	hourly_wage DECIMAL NULL CHECK (hourly_wage >= 0)
+);
 
 
 CREATE TABLE driver (
 	worker_id BIGINT UNSIGNED NOT NULL,
-	line_name VARCHAR(255),
-    
-	UNIQUE INDEX id_UNIQUE (worker_id ASC) VISIBLE,
-	INDEX name_idx (line_name ASC) VISIBLE,
+	line_name VARCHAR(255) NULL,
     
 	CONSTRAINT driver_fk_worker_id FOREIGN KEY (worker_id) REFERENCES worker (id)
-		ON DELETE CASCADE
-		ON UPDATE NO ACTION,
+		ON DELETE CASCADE,
 	CONSTRAINT driver_fk_line_name FOREIGN KEY (line_name) REFERENCES line (name)
 		ON DELETE SET NULL
-		ON UPDATE NO ACTION)
-;
+);
 
 
 CREATE TABLE station_worker (
 	worker_id BIGINT UNSIGNED NOT NULL,
-	station_id BIGINT UNSIGNED,
-    
-	UNIQUE INDEX worker_id_UNIQUE (worker_id ASC),
+	station_id BIGINT UNSIGNED NULL,
     
 	CONSTRAINT station_worker_fk_worker_id FOREIGN KEY (worker_id) REFERENCES worker (id)
-		ON DELETE CASCADE
-		ON UPDATE NO ACTION,
+		ON DELETE CASCADE,
 	CONSTRAINT station_worker_fk_station_id FOREIGN KEY (station_id) REFERENCES station (id)
 		ON DELETE SET NULL
-		ON UPDATE NO ACTION)
-;
+);
 
