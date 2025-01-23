@@ -2,11 +2,11 @@ package com.solvd.subway.networkelements;
 
 public class RouteSection {
 
-    private Integer id;
-    private Station departureStation;
-    private Station destinationStation;
-    private Integer minutes;
-    private Zone zone;
+	private Integer id;
+	private Station departureStation;
+	private Station destinationStation;
+	private Integer minutes;
+	private Zone zone;
 
 	public Integer getId() {
 		return id;
@@ -24,13 +24,13 @@ public class RouteSection {
 		this.departureStation = departureStation;
 	}
 
-    public Station getDestinationStation() {
-        return destinationStation;
-    }
+	public Station getDestinationStation() {
+		return destinationStation;
+	}
 
-    public void setDestinationStation(Station destinationStation) {
-        this.destinationStation = destinationStation;
-    }
+	public void setDestinationStation(Station destinationStation) {
+		this.destinationStation = destinationStation;
+	}
 
 	public Integer getMinutes() {
 		return minutes;

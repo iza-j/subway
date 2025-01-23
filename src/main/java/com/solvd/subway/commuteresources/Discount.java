@@ -4,22 +4,22 @@ import java.math.BigDecimal;
 
 public class Discount {
 
-    private String name;
-    private BigDecimal reductionPercentage;
+	private String name;
+	private BigDecimal reductionPercentage;
 
-    public String getName() {
-        return name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public BigDecimal getReductionPercentage() {
-        return reductionPercentage;
-    }
+	public BigDecimal getReductionPercentage() {
+		return reductionPercentage;
+	}
 
-    public void setReductionPercentage(BigDecimal reductionPercentage) {
-        this.reductionPercentage = reductionPercentage;
-    }
+	public void setReductionPercentage(BigDecimal reductionPercentage) {
+		this.reductionPercentage = reductionPercentage;
+	}
 }

@@ -19,7 +19,7 @@ public class Subway {
 	// workers
 	private ArrayList<Worker> workers;
 
-	
+
 	public ArrayList<Discount> getDiscounts() {
 		return discounts;
 	}
