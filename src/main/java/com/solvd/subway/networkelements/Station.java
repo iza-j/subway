@@ -2,19 +2,19 @@ package com.solvd.subway.networkelements;
 
 public class Station {
 
-    private long id;
+    private Integer id;
     private String name;
 
-    public Station(long id, String name) {
+    public Station(Integer id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    public long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

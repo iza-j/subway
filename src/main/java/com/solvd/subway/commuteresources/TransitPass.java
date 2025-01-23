@@ -8,7 +8,7 @@ public class TransitPass {
 
     private String name;
     private Zone outermostZone;
-    private long numberOfDays;
+    private Integer numberOfDays;
     private BigDecimal price;
 
     public String getName() {
@@ -27,11 +27,11 @@ public class TransitPass {
         this.outermostZone = outermostZone;
     }
 
-    public long getNumberOfDays() {
+    public Integer getNumberOfDays() {
         return numberOfDays;
     }
 
-    public void setNumberOfDays(long numberOfDays) {
+    public void setNumberOfDays(Integer numberOfDays) {
         this.numberOfDays = numberOfDays;
     }
 

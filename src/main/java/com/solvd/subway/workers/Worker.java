@@ -4,15 +4,15 @@ import java.math.BigDecimal;
 
 public abstract class Worker {
 
-    private long id;
+    private Integer id;
     private String name;
     private BigDecimal hourlyWage;
 
-    public long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

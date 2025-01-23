@@ -5,18 +5,18 @@ import java.util.Date;
 
 public class Passenger {
 
-    private long id;
+    private Integer id;
     private String name;
     private Discount discount;
     private BigDecimal credit;
     private TransitPass transitPass;
     private Date passValidityStartingDay;
 
-    public long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
