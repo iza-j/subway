@@ -6,20 +6,20 @@ USE subway;
 #################################################
 #				network elements				#
 #################################################
-CREATE TABLE station (
-	id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	name VARCHAR(255) NOT NULL
-);
-
-
 CREATE TABLE zone (
 	name VARCHAR(255) NOT NULL PRIMARY KEY,
-	base_fare_one_minute DECIMAL NOT NULL CHECK (base_fare_one_minute >= 0)
+	base_fare_one_minute DECIMAL(4,2) NOT NULL CHECK (base_fare_one_minute >= 0) -- values from 0 to 99.99
 );
 
 
 CREATE TABLE line (
 	name VARCHAR(255) NOT NULL PRIMARY KEY
+);
+
+
+CREATE TABLE station (
+	id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	name VARCHAR(255) NOT NULL
 );
 
 
@@ -56,7 +56,7 @@ CREATE TABLE line_has_route_section (
 #################################################
 CREATE TABLE discount (
 	name VARCHAR(255) NOT NULL PRIMARY KEY,
-	reduction_percentage DECIMAL NOT NULL CHECK (reduction_percentage >= 0)
+	reduction_percentage DECIMAL(4,2) NOT NULL CHECK (reduction_percentage >= 0)
 );
 
 
@@ -75,7 +75,7 @@ CREATE TABLE passenger (
 	id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	name VARCHAR(255) NOT NULL,
 	discount_name VARCHAR(255) NULL,
-	credit DECIMAL NOT NULL CHECK (credit >= 0),
+	credit DECIMAL(8,2) NULL CHECK (credit >= 0),
 	transit_pass_name VARCHAR(255) NULL,
 	pass_validity_starting_day DATE NULL,
     
@@ -92,7 +92,7 @@ CREATE TABLE passenger (
 CREATE TABLE worker (
 	id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	name VARCHAR(255) NOT NULL,
-	hourly_wage DECIMAL NULL CHECK (hourly_wage >= 0)
+	hourly_wage DECIMAL(8,2) NULL CHECK (hourly_wage >= 0)
 );
 
 
@@ -116,4 +116,3 @@ CREATE TABLE station_worker (
 	CONSTRAINT station_worker_fk_station_id FOREIGN KEY (station_id) REFERENCES station (id)
 		ON DELETE SET NULL
 );
-
