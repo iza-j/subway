@@ -47,7 +47,7 @@ CREATE TABLE line_has_route_section (
 	CONSTRAINT line_has_route_section_fk_line_name FOREIGN KEY (line_name) REFERENCES line (name)
 		ON DELETE CASCADE,
 	CONSTRAINT line_has_route_section_fk_route_section_id FOREIGN KEY (route_section_id) REFERENCES route_section (id)
-		ON DELETE CASCADE
+		ON DELETE RESTRICT
 );
 
 
@@ -80,9 +80,9 @@ CREATE TABLE passenger (
 	pass_validity_starting_day DATE NULL,
     
 	CONSTRAINT passenger_fk_discount_name FOREIGN KEY (discount_name) REFERENCES discount (name)
-		ON DELETE SET NULL,
+		ON DELETE RESTRICT,
 	CONSTRAINT passenger_fk_transit_pass_name FOREIGN KEY (transit_pass_name) REFERENCES transit_pass (name)
-		ON DELETE SET NULL
+		ON DELETE RESTRICT
 );
 
 
