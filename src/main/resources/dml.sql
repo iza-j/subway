@@ -103,7 +103,7 @@ INSERT INTO worker (name, hourly_wage) VALUES
 ("Barbara Bigosik",		28),
 ("Jan Paweł Donosik",	21.37),
 ("Sławomira Grosik",	51.11),
-("Fryderyk Stosik",		NULL)
+("Fryderyk Stosik",		23.3)
 ;
 
 INSERT INTO driver (worker_id, line_name) VALUES
