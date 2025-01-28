@@ -1,30 +1,56 @@
--- 10 "delete" statements -- 1/10
--- 10 "update" statements -- 2/10
--- 5 "alter table" -- 1/5
--- 5 statements with aggregation functions and "group by" with and without "having" -- 2/5
-
 -- -- for error 1055:
 -- SET sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY','')); 
 
 USE subway
 ;
 
--- add birth_year column to worker table
+-- add birth_year to the worker table
 ALTER TABLE worker ADD birth_year BIGINT UNSIGNED NULL;
 UPDATE worker SET birth_year = 1990 WHERE id = 1;
 UPDATE worker SET birth_year = 1987 WHERE id = 2;
-UPDATE worker SET birth_year = 1972 WHERE id = 3;
+UPDATE worker SET birth_year = 1990 WHERE id = 3;
 UPDATE worker SET birth_year = 1989 WHERE id = 4;
-UPDATE worker SET birth_year = 1994 WHERE id = 5;
+UPDATE worker SET birth_year = 1989 WHERE id = 5;
+
+-- see whether drivers make more or less than other workers
+SELECT IF(job_title="driver", TRUE, FALSE) AS is_a_driver, AVG(hourly_wage)
+	FROM worker 
+	GROUP BY is_a_driver
+;
+
+-- add line_name to the worker table
+ALTER TABLE worker ADD line_name VARCHAR(255) NULL
+;
+ALTER TABLE worker ADD 
+CONSTRAINT worker_fk_line_name FOREIGN KEY (line_name) REFERENCES line (name)
+	ON DELETE SET NULL
+;
+UPDATE worker SET line_name = "2" WHERE id = 1;
+UPDATE worker SET line_name = "12" WHERE id = 3;
+
+-- add station_id to the worker table
+ALTER TABLE worker ADD station_id BIGINT UNSIGNED NULL
+;
+ALTER TABLE worker ADD 
+CONSTRAINT worker_fk_station_id FOREIGN KEY (station_id) REFERENCES station (id)
+	ON DELETE SET NULL
+;
+UPDATE worker SET station_id = 8 WHERE id = 4;
+UPDATE worker SET station_id = 10 WHERE id = 5;
 SELECT * FROM worker
 ;
 
--- see whether drivers make more or less than other workers
-SELECT IF(d.worker_id>0, TRUE, FALSE) AS is_a_driver, AVG(hourly_wage)
-	FROM worker w
-	LEFT JOIN driver d ON w.id = d.worker_id
-	LEFT JOIN station_worker s ON w.id = s.worker_id
-	GROUP BY is_a_driver
+-- see average wage by year of birth
+SELECT birth_year, AVG(hourly_wage)
+	FROM worker 
+	GROUP BY birth_year
+;
+
+-- see how many employees earn over 21 /hour
+SELECT IF(hourly_wage > 21, "earning over 21", "earning 21 or less") AS wage, COUNT(worker.name) 
+	FROM worker
+    LEFT JOIN line ON line.name = worker.line_name
+    GROUP BY wage
 ;
 
 -- view all existing route sections
@@ -68,17 +94,31 @@ UPDATE passenger p INNER JOIN transit_pass t ON p.transit_pass_name = t.name
     SET p.transit_pass_name = NULL, p.pass_validity_starting_day = NULL
 	WHERE DATE_ADD(pass_validity_starting_day, INTERVAL number_of_days DAY) < CURDATE()
 ;
+
+-- delete and add some passengers
+DELETE passenger FROM passenger WHERE id = 5
+;
+DELETE passenger FROM passenger WHERE name = "Agata Smętka" AND id = 6
+;
+INSERT INTO passenger (name) VALUE ("Janina Giętka")
+;
 SELECT * FROM passenger
 ;
 
--- do a full outer join for drivers and lines
+-- delete all discounts
+DELETE FROM discount
+;
+SELECT * FROM DISCOUNT
+;
+
+-- do a full outer join for workers and lines to see which lines have no drivers
 SELECT *
-	FROM driver d
-	LEFT JOIN line l ON d.line_name = l.name
+	FROM worker w
+	LEFT JOIN line l ON w.line_name = l.name
 UNION
 SELECT *
-	FROM driver d
-	RIGHT JOIN line l ON d.line_name = l.name
+	FROM worker w
+	RIGHT JOIN line l ON w.line_name = l.name
 ;
 
 -- view existing lines and calculate fares for their whole routes
@@ -90,6 +130,7 @@ SELECT line.name, SUM(base_fare_one_minute*minutes) AS base_fare
 	LEFT JOIN station dest ON rs.destination_station_id = dest.id
     LEFT JOIN zone ON rs.zone_name = zone.name
     GROUP BY line.name
+    HAVING base_fare IS NOT NULL
 ;
 
 -- delete subway lines that have no route sections
@@ -98,5 +139,18 @@ DELETE line
 	LEFT JOIN line_has_route_section lhrs ON line.name = lhrs.line_name
 	WHERE lhrs.line_name IS NULL
 ;
-SELECT * FROM line
+
+-- see how many lines arrive at each station
+SELECT station.name, COUNT(route_section.id) 
+	FROM station 
+    RIGHT JOIN route_section ON station.id = route_section.destination_station_id
+    GROUP BY name
+;
+
+-- fire everybody working at Rondo Kaponiera and Poznań Główny stations :(
+DELETE worker 
+	FROM worker
+    WHERE station_id = 8 OR station_id = 10
+;
+SELECT * FROM worker
 ;

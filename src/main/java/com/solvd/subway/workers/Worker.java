@@ -1,12 +1,18 @@
 package com.solvd.subway.workers;
 
+import com.solvd.subway.networkelements.Line;
+import com.solvd.subway.networkelements.Station;
+
 import java.math.BigDecimal;
 
-public abstract class Worker {
+public class Worker {
 
 	private Integer id;
 	private String name;
 	private BigDecimal hourlyWage;
+	private Job job;
+	private Line line;
+	private Station station;
 
 	public Integer getId() {
 		return id;
@@ -30,5 +36,29 @@ public abstract class Worker {
 
 	public void setHourlyWage(BigDecimal hourlyWage) {
 		this.hourlyWage = hourlyWage;
+	}
+
+	public Job getJob() {
+		return job;
+	}
+
+	public void setJob(Job job) {
+		this.job = job;
+	}
+
+	public Line getLine() {
+		return line;
+	}
+
+	public void setLine(Line line) {
+		this.line = line;
+	}
+
+	public Station getStation() {
+		return station;
+	}
+
+	public void setStation(Station station) {
+		this.station = station;
 	}
 }

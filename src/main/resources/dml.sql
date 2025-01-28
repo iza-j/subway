@@ -62,7 +62,6 @@ INSERT INTO line_has_route_section (line_name, route_section_id, section_no) VAL
 ("18", 4, 5),
 ("18", 5, 6),
 
-
 ("12", 10, 1),
 ("12", 11, 2),
 ("12", 8, 3)
@@ -87,7 +86,7 @@ INSERT INTO transit_pass (name, outermost_zone_name, number_of_days, price) VALU
 ;
 
 INSERT INTO passenger (name, discount_name, credit, transit_pass_name, pass_validity_starting_day) VALUES 
-("Izabella Jętka",	"Student",	4.20,	"Monthly A+B",	'2025-01-07'),
+("Izabella Jętka",	"Student",	4.20,	"Monthly A+B",	'2025-01-21'),
 ("Michał Dętka",	"Teacher",	NULL,	"Yearly A",		'2024-10-01'),
 ("Zofia Cętka",		"Senior",	34.9,	NULL,			NULL),
 ("Jakub Piętka",	NULL,		NULL,	"Weekly A+B",	'2025-01-11'),
@@ -98,21 +97,19 @@ INSERT INTO passenger (name, discount_name, credit, transit_pass_name, pass_vali
 #################################################
 #					workers						#
 #################################################
-INSERT INTO worker (name, hourly_wage) VALUES
-("Jan Osik",			17.99),
-("Barbara Bigosik",		28),
-("Jan Paweł Donosik",	21.37),
-("Sławomira Grosik",	51.11),
-("Fryderyk Stosik",		23.3)
+INSERT INTO job (title) VALUES
+("driver"),
+("engineer"),
+("station worker")
 ;
 
-INSERT INTO driver (worker_id, line_name) VALUES
-(1, "2"),
-(2, NULL),
-(3, "12")
-;
-
-INSERT INTO station_worker (worker_id, station_id) VALUES
-(4, 6),
-(5, 9)
+INSERT INTO worker (name, hourly_wage, job_title) VALUES
+("Jan Osik",			17.99,	"driver"),
+("Barbara Bigosik",		28,		"driver"),
+("Jan Paweł Donosik",	21.37,	"driver"),
+("Sławomira Grosik",	51.11,	"engineer"),
+("Fryderyk Stosik",		23.3,	"station worker"),
+("Kalina Głosik",		32.9,	"driver"),
+("Jakub Losik",			19.75,	"driver"),
+("Tatiana Termosik",	20.99,	"driver")
 ;

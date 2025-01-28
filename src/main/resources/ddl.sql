@@ -80,7 +80,7 @@ CREATE TABLE passenger (
 	pass_validity_starting_day DATE NULL,
     
 	CONSTRAINT passenger_fk_discount_name FOREIGN KEY (discount_name) REFERENCES discount (name)
-		ON DELETE RESTRICT,
+		ON DELETE SET NULL,
 	CONSTRAINT passenger_fk_transit_pass_name FOREIGN KEY (transit_pass_name) REFERENCES transit_pass (name)
 		ON DELETE RESTRICT
 );
@@ -89,30 +89,18 @@ CREATE TABLE passenger (
 #################################################
 #					workers						#
 #################################################
+CREATE TABLE job (
+	title VARCHAR(255) NOT NULL PRIMARY KEY
+);
+
+
 CREATE TABLE worker (
 	id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	name VARCHAR(255) NOT NULL,
-	hourly_wage DECIMAL(8,2) NULL CHECK (hourly_wage >= 0)
-);
-
-
-CREATE TABLE driver (
-	worker_id BIGINT UNSIGNED NOT NULL,
-	line_name VARCHAR(255) NULL,
+	hourly_wage DECIMAL(8,2) NULL CHECK (hourly_wage >= 0),
+    job_title VARCHAR(255) NULL,
     
-	CONSTRAINT driver_fk_worker_id FOREIGN KEY (worker_id) REFERENCES worker (id)
-		ON DELETE CASCADE,
-	CONSTRAINT driver_fk_line_name FOREIGN KEY (line_name) REFERENCES line (name)
+    CONSTRAINT worker_fk_job_title FOREIGN KEY (job_title) REFERENCES job (title)
 		ON DELETE SET NULL
 );
 
-
-CREATE TABLE station_worker (
-	worker_id BIGINT UNSIGNED NOT NULL,
-	station_id BIGINT UNSIGNED NULL,
-    
-	CONSTRAINT station_worker_fk_worker_id FOREIGN KEY (worker_id) REFERENCES worker (id)
-		ON DELETE CASCADE,
-	CONSTRAINT station_worker_fk_station_id FOREIGN KEY (station_id) REFERENCES station (id)
-		ON DELETE SET NULL
-);

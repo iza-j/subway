@@ -1,11 +1,11 @@
 package com.solvd.subway.networkelements;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class Line {
 
 	private String name;
-	private ArrayList<RouteSection> routeSections;
+	private List<RouteSection> routeSections;
 
 	public String getName() {
 		return name;
@@ -15,11 +15,11 @@ public class Line {
 		this.name = name;
 	}
 
-	public ArrayList<RouteSection> getRouteSections() {
+	public List<RouteSection> getRouteSections() {
 		return routeSections;
 	}
 
-	public void setRouteSections(ArrayList<RouteSection> routeSections) {
+	public void setRouteSections(List<RouteSection> routeSections) {
 		this.routeSections = routeSections;
 	}
 }
