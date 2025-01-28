@@ -67,6 +67,10 @@ INSERT INTO line_has_route_section (line_name, route_section_id, section_no) VAL
 ("12", 8, 3)
 ;
 
+INSERT INTO subway (name, passenger_table_name, line_table_name, worker_table_name) VALUE
+("Metro Poznańskie", "passenger", "line", "worker")
+;
+
 #################################################
 #				commute resources				#
 #################################################

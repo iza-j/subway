@@ -7,9 +7,18 @@ import java.util.List;
 
 public class Subway {
 
+	private String name;
 	private List<Passenger> passengers;
 	private List<Line> lines;
 	private List<Worker> workers;
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
 
 	public List<Passenger> getPassengers() {
 		return passengers;

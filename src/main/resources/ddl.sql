@@ -86,6 +86,14 @@ CREATE TABLE passenger (
 );
 
 
+CREATE TABLE subway (
+	name VARCHAR(255) NOT NULL PRIMARY KEY,
+	passenger_table_name VARCHAR(255) NOT NULL,
+    line_table_name VARCHAR(255) NOT NULL, -- can't name it 'lines' because it's a reserved keyword
+    worker_table_name VARCHAR(255) NOT NULL
+);
+
+
 #################################################
 #					workers						#
 #################################################
