@@ -1,14 +1,9 @@
-package com.solvd.subway.networkelements;
+package com.solvd.subway.domain.networkelements;
 
 public class Station {
 
 	private Integer id;
 	private String name;
-
-	public Station(Integer id, String name) {
-		this.id = id;
-		this.name = name;
-	}
 
 	public Integer getId() {
 		return id;

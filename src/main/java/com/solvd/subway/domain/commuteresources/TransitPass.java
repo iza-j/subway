@@ -1,6 +1,6 @@
-package com.solvd.subway.commuteresources;
+package com.solvd.subway.domain.commuteresources;
 
-import com.solvd.subway.networkelements.Zone;
+import com.solvd.subway.domain.networkelements.Zone;
 
 import java.math.BigDecimal;
 

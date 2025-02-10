@@ -1,4 +1,4 @@
-package com.solvd.subway.networkelements;
+package com.solvd.subway.domain.networkelements;
 
 public class RouteSection {
 

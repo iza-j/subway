@@ -1,7 +1,7 @@
-package com.solvd.subway.networkelements;
+package com.solvd.subway.domain.networkelements;
 
-import com.solvd.subway.commuteresources.Passenger;
-import com.solvd.subway.workers.Worker;
+import com.solvd.subway.domain.commuteresources.Passenger;
+import com.solvd.subway.domain.workers.Worker;
 
 import java.util.List;
 

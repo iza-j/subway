@@ -1,4 +1,4 @@
-package com.solvd.subway.workers;
+package com.solvd.subway.domain.workers;
 
 public class Job {
 

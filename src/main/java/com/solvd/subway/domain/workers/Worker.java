@@ -1,7 +1,7 @@
-package com.solvd.subway.workers;
+package com.solvd.subway.domain.workers;
 
-import com.solvd.subway.networkelements.Line;
-import com.solvd.subway.networkelements.Station;
+import com.solvd.subway.domain.networkelements.Line;
+import com.solvd.subway.domain.networkelements.Station;
 
 import java.math.BigDecimal;
 

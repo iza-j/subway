@@ -3,12 +3,12 @@ USE subway;
 #################################################
 #				network elements				#
 #################################################
-INSERT INTO zone (name, base_fare_one_minute) VALUES
+INSERT INTO zones (name, base_fare_one_minute) VALUES
 ("A", 0.17),
 ("B", 0.22)
 ;
 
-INSERT INTO line (name) VALUES 
+INSERT INTO lines_ (name) VALUES 
 ("2"),
 ("11"),
 ("12"),
@@ -16,7 +16,7 @@ INSERT INTO line (name) VALUES
 ("18")
 ;
 
-INSERT INTO station (name) VALUES
+INSERT INTO stations (name) VALUES
 ("Plac Cyryla Ratajskiego"), -- 1
 ("Fredry"),
 ("Most Teatralny"), -- 3
@@ -33,7 +33,7 @@ INSERT INTO station (name) VALUES
 ("Park Wilsona")
 ;
 
-INSERT INTO route_section (departure_station_id, destination_station_id, minutes, zone_name) VALUES
+INSERT INTO route_sections (departure_station_id, destination_station_id, minutes, zone_name) VALUES
 (9, 8, 2, "A"), -- 1
 (8, 7, 1, "A"),
 (7, 4, 3, "A"), -- 3
@@ -48,7 +48,7 @@ INSERT INTO route_section (departure_station_id, destination_station_id, minutes
 (8, 3, 1, "A")
 ;
 
-INSERT INTO line_has_route_section (line_name, route_section_id, section_no) VALUES
+INSERT INTO lines_have_route_sections (line_name, route_section_id, section_no) VALUES
 ("2", 1, 1),
 ("2", 2, 2),
 ("2", 3, 3),
@@ -67,20 +67,20 @@ INSERT INTO line_has_route_section (line_name, route_section_id, section_no) VAL
 ("12", 8, 3)
 ;
 
-INSERT INTO subway (name, passenger_table_name, line_table_name, worker_table_name) VALUE
-("Metro Poznańskie", "passenger", "line", "worker")
+INSERT INTO subways (name, passenger_table_name, line_table_name, worker_table_name) VALUE
+("Metro Poznańskie", "passengers", "lines_", "workers")
 ;
 
 #################################################
 #				commute resources				#
 #################################################
-INSERT INTO discount (name, reduction_percentage) VALUES 
+INSERT INTO discounts (name, reduction_percentage) VALUES 
 ("Student",	51),
 ("Teacher",	33),
 ("Senior",	37)
 ;
 
-INSERT INTO transit_pass (name, outermost_zone_name, number_of_days, price) VALUES
+INSERT INTO transit_passes (name, outermost_zone_name, number_of_days, price) VALUES
 ("Weekly A", 	"A",	7,		31),
 ("Weekly A+B", 	"B",	7,		45),
 ("Monthly A", 	"A",	31,		86),
@@ -89,7 +89,7 @@ INSERT INTO transit_pass (name, outermost_zone_name, number_of_days, price) VALU
 ("Yearly A+B",	"B",	366,	1067)
 ;
 
-INSERT INTO passenger (name, discount_name, credit, transit_pass_name, pass_validity_starting_day) VALUES 
+INSERT INTO passengers (name, discount_name, credit, transit_pass_name, pass_validity_starting_day) VALUES 
 ("Izabella Jętka",	"Student",	4.20,	"Monthly A+B",	'2025-01-21'),
 ("Michał Dętka",	"Teacher",	NULL,	"Yearly A",		'2024-10-01'),
 ("Zofia Cętka",		"Senior",	34.9,	NULL,			NULL),
@@ -101,13 +101,13 @@ INSERT INTO passenger (name, discount_name, credit, transit_pass_name, pass_vali
 #################################################
 #					workers						#
 #################################################
-INSERT INTO job (title) VALUES
+INSERT INTO jobs (title) VALUES
 ("driver"),
 ("engineer"),
 ("station worker")
 ;
 
-INSERT INTO worker (name, hourly_wage, job_title) VALUES
+INSERT INTO workers (name, hourly_wage, job_title) VALUES
 ("Jan Osik",			17.99,	"driver"),
 ("Barbara Bigosik",		28,		"driver"),
 ("Jan Paweł Donosik",	21.37,	"driver"),
