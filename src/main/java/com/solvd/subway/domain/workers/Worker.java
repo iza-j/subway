@@ -2,16 +2,31 @@ package com.solvd.subway.domain.workers;
 
 import com.solvd.subway.domain.networkelements.Line;
 import com.solvd.subway.domain.networkelements.Station;
+import jakarta.xml.bind.annotation.*;
 
 import java.math.BigDecimal;
 
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(propOrder = {"id", "name", "hourlyWage", "job", "line", "station"})
 public class Worker {
 
+	@XmlAttribute
 	private Integer id;
+
+	@XmlElement
 	private String name;
+
+	@XmlElement
 	private BigDecimal hourlyWage;
+
+	@XmlElement
 	private Job job;
+
+	@XmlElement
 	private Line line;
+
+	@XmlElement
 	private Station station;
 
 	public Integer getId() {

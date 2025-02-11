@@ -1,15 +1,31 @@
 package com.solvd.subway.domain.commuteresources;
 
+import jakarta.xml.bind.annotation.*;
+
 import java.math.BigDecimal;
 import java.util.Date;
 
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(propOrder = {"id", "name", "discount", "credit", "transitPass", "passValidityStartingDay"})
 public class Passenger {
 
+	@XmlAttribute
 	private Integer id;
+
+	@XmlElement
 	private String name;
+
+	@XmlElement
 	private Discount discount;
+
+	@XmlElement
 	private BigDecimal credit;
+
+	@XmlElement
 	private TransitPass transitPass;
+
+	@XmlElement
 	private Date passValidityStartingDay;
 
 	public Integer getId() {

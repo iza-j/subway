@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<passenger id="1">
+	<name>Michał Dętka</name>
+	<discount>
+		<name>Teacher</name>
+		<reductionPercentage>33</reductionPercentage>
+	</discount>
+	<credit>27.92</credit>
+	<transitPass>
+		<name>Yearly A</name>
+		<numberOfDays>366</numberOfDays>
+	</transitPass>
+	<passValidityStartingDay>2024-10-01</passValidityStartingDay>
+</passenger>

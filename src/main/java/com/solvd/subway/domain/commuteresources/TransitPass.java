@@ -1,14 +1,25 @@
 package com.solvd.subway.domain.commuteresources;
 
 import com.solvd.subway.domain.networkelements.Zone;
+import jakarta.xml.bind.annotation.*;
 
 import java.math.BigDecimal;
 
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(propOrder = {"name", "outermostZone", "numberOfDays", "price"})
 public class TransitPass {
 
+	@XmlElement
 	private String name;
+
+	@XmlElement
 	private Zone outermostZone;
+
+	@XmlElement
 	private Integer numberOfDays;
+
+	@XmlElement
 	private BigDecimal price;
 
 	public String getName() {

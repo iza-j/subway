@@ -2,14 +2,25 @@ package com.solvd.subway.domain.networkelements;
 
 import com.solvd.subway.domain.commuteresources.Passenger;
 import com.solvd.subway.domain.workers.Worker;
+import jakarta.xml.bind.annotation.*;
 
 import java.util.List;
 
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(propOrder = {"name", "passengers", "lines", "workers"})
 public class Subway {
 
+	@XmlAttribute
 	private String name;
+
+	@XmlElementWrapper
 	private List<Passenger> passengers;
+
+	@XmlElementWrapper
 	private List<Line> lines;
+
+	@XmlElementWrapper
 	private List<Worker> workers;
 
 	public String getName() {

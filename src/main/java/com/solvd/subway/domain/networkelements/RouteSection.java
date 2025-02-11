@@ -1,11 +1,25 @@
 package com.solvd.subway.domain.networkelements;
 
+import jakarta.xml.bind.annotation.*;
+
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(propOrder = {"id", "departureStation", "destinationStation", "minutes", "zone"})
 public class RouteSection {
 
+	@XmlElement
 	private Integer id;
+
+	@XmlElement
 	private Station departureStation;
+
+	@XmlElement
 	private Station destinationStation;
+
+	@XmlElement
 	private Integer minutes;
+
+	@XmlElement
 	private Zone zone;
 
 	public Integer getId() {

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<transitPass>
+    <name>Yearly A</name>
+    <outermostZone>
+        <name>A</name>
+        <baseFareOneMinute>0.17</baseFareOneMinute>
+    </outermostZone>
+    <numberOfDays>366</numberOfDays>
+    <price>702</price>
+</transitPass>

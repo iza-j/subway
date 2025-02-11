@@ -1,27 +1,37 @@
 package com.solvd.subway;
 
-import com.solvd.subway.domain.networkelements.Line;
-import com.solvd.subway.domain.networkelements.RouteSection;
-import com.solvd.subway.domain.networkelements.Station;
-import com.solvd.subway.domain.networkelements.Zone;
+import com.solvd.subway.domain.commuteresources.Discount;
+import com.solvd.subway.domain.commuteresources.Passenger;
+import com.solvd.subway.domain.commuteresources.TransitPass;
+import com.solvd.subway.domain.networkelements.*;
 import com.solvd.subway.domain.workers.Job;
 import com.solvd.subway.domain.workers.Worker;
 import com.solvd.subway.persistence.Config;
 import com.solvd.subway.service.*;
 import com.solvd.subway.service.impl.*;
+import com.solvd.subway.service.parser.JAXBParser;
+import jakarta.xml.bind.JAXBException;
+
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.sql.Date;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import static com.solvd.subway.persistence.Config.*;
 import static com.solvd.subway.service.impl.RouteSectionServiceImpl.printDetails;
 import static com.solvd.subway.service.impl.WorkerServiceImpl.printDetails;
+import static com.solvd.subway.service.parser.DiscountSAXParser.parseDiscount;
 
 public class Main {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws JAXBException, IOException {
 
 		// https://launchbylunch.com/posts/2014/Feb/16/sql-naming-conventions/#naming-conventions
 
 		System.out.println("\nTickets please!!\n");
 
+		///////////////////////////////////////////////////////////////////////////////////////////////////
 		// mysql HW #3
 
 		// domain:		 contains the business models
@@ -90,5 +100,109 @@ public class Main {
 		routeSectionService.create(newRouteSection);
 		routeSectionService.updateTime(newRouteSection.getId(), 1);
 		routeSectionService.getAll().forEach(r -> printDetails(r));
+		System.out.println();
+
+		///////////////////////////////////////////////////////////////////////////////////////////////////
+		// mysql HW #4
+
+		// idk what's wrong
+		Discount saxDiscount = parseDiscount();
+		System.out.println(saxDiscount.getName() + " --- " + saxDiscount.getReductionPercentage());
+		System.out.println();
+
+		///////////////////////////////////////////////////////////////////////////////////////////////////
+		// mysql HW #5
+
+		// java to xml	=	marshalling
+		// xml to java	=	unmarshalling
+
+		JAXBParser jaxbParser = new JAXBParser();
+
+		// Zone
+		Zone zone = new Zone();
+		zone.setName("A");
+		zone.setBaseFareOneMinute(BigDecimal.valueOf(0.17));
+		jaxbParser.marshal(zone);
+
+		// Discount
+		Discount discount = new Discount();
+		discount.setName("Teacher");
+		discount.setReductionPercentage(BigDecimal.valueOf(33));
+		jaxbParser.marshal(discount);
+
+		// TransitPass
+		TransitPass transitPass = new TransitPass();
+		transitPass.setName("Yearly A");
+		transitPass.setNumberOfDays(366);
+		transitPass.setPrice(BigDecimal.valueOf(702));
+		transitPass.setOutermostZone(zone);
+		jaxbParser.marshal(transitPass);
+
+		// Passenger
+		Passenger passenger = new Passenger();
+		passenger.setId(1);
+		passenger.setName("Michał Dętka");
+		passenger.setDiscount(discount);
+		passenger.setCredit(BigDecimal.valueOf(27.92));
+		passenger.setTransitPass(transitPass);
+		passenger.setPassValidityStartingDay(Date.valueOf("2024-10-01"));
+		jaxbParser.marshal(passenger);
+
+		// Job
+		Job job = new Job();
+		job.setTitle("programmer");
+		jaxbParser.marshal(job);
+
+		// Station
+		Station station = new Station();
+		station.setId(45);
+		station.setName("Rondo Starołęka");
+		Station station2 = new Station();
+		station2.setId(46);
+		station2.setName("Rondo Śródka");
+		jaxbParser.marshal(station2);
+
+		// RouteSection "id", "departureStation", "destinationStation", "minutes", "zone"})
+		RouteSection routeSection = new RouteSection();
+		routeSection.setId(1);
+		routeSection.setDepartureStation(newStation);
+		routeSection.setDestinationStation(station);
+		routeSection.setMinutes(2);
+		routeSection.setZone(zone);
+		RouteSection routeSection2 = new RouteSection();
+		routeSection2.setId(2);
+		routeSection2.setDepartureStation(station);
+		routeSection2.setDestinationStation(station2);
+		routeSection2.setMinutes(3);
+		routeSection2.setZone(zone);
+		jaxbParser.marshal(routeSection2);
+
+		// Line
+		Line line =	new Line();
+		line.setName("13");
+		line.setRouteSections(new ArrayList<>(Arrays.asList(routeSection, routeSection2)));
+		jaxbParser.marshal(line);
+
+		// Worker
+		Worker worker = new Worker();
+		worker.setId(17);
+		worker.setName("Irena Rooibosik");
+		worker.setHourlyWage(BigDecimal.valueOf(99.54));
+		worker.setJob(job);
+		worker.setLine(line);
+		worker.setStation(station);
+		jaxbParser.marshal(worker);
+
+		// Subway
+		Subway subway = new Subway();
+		subway.setName("Metro Poznańskie");
+		subway.setPassengers(new ArrayList<>(Arrays.asList(passenger)));
+		subway.setLines(new ArrayList<>(Arrays.asList(line, newLine)));
+		subway.setWorkers(new ArrayList<>(Arrays.asList(worker, newWorker)));
+		jaxbParser.marshal(subway);
+
+		// unmarshalling
+		printDetails(jaxbParser.unmarshalWorker());
+		System.out.println(jaxbParser.unmarshalPassenger().getName());
 	}
 }

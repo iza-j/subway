@@ -1,10 +1,18 @@
 package com.solvd.subway.domain.networkelements;
 
+import jakarta.xml.bind.annotation.*;
+
 import java.util.List;
 
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(propOrder = {"name", "routeSections"})
 public class Line {
 
+	@XmlElement
 	private String name;
+
+	@XmlElementWrapper
 	private List<RouteSection> routeSections;
 
 	public String getName() {
