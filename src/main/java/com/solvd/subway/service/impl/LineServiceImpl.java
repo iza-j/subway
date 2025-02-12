@@ -31,4 +31,9 @@ public class LineServiceImpl implements LineService {
 		lineRepository.delete(line);
 		System.out.println("Line " + line.getName() + " deleted from the database!");
 	}
+
+	@Override
+	public void viewSections(String lineName) {
+		lineRepository.viewSections(lineName);
+	}
 }

@@ -23,14 +23,12 @@ public class JAXBParser {
 	public Worker unmarshalWorker() throws JAXBException, IOException {
 		String fileName = "src/main/resources/worker.xml";
 		JAXBContext context = JAXBContext.newInstance(Worker.class);
-		Worker result = (Worker) context.createUnmarshaller().unmarshal(new FileReader(fileName));
-		return result;
+		return (Worker) context.createUnmarshaller().unmarshal(new FileReader(fileName));
 	}
 
 	public Passenger unmarshalPassenger() throws JAXBException, IOException {
 		String fileName = "src/main/resources/passenger.xml";
 		JAXBContext context = JAXBContext.newInstance(Passenger.class);
-		Passenger result = (Passenger) context.createUnmarshaller().unmarshal(new FileReader(fileName));
-		return result;
+		return (Passenger) context.createUnmarshaller().unmarshal(new FileReader(fileName));
 	}
 }

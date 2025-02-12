@@ -22,7 +22,17 @@ public class LineRepositoryImpl implements LineRepository {
 			"LEFT JOIN stations dep ON rs.departure_station_id = dep.id " +
 			"LEFT JOIN stations dest ON rs.destination_station_id = dest.id " +
 			"LEFT JOIN zones ON rs.zone_name = zones.name " +
-			"WHERE lines_.name = ?;" ;
+			"WHERE lines_.name = ?;";
+
+	private static final String VIEW_SECTIONS_QUERY =
+		"SELECT line_name, departure_station.name AS departure, destination_station.name AS destination, minutes, zone_name, base_fare_one_minute " +
+			"FROM route_sections " +
+			"LEFT JOIN stations AS departure_station ON route_sections.departure_station_id = departure_station.id " +
+			"LEFT JOIN stations AS destination_station ON route_sections.destination_station_id = destination_station.id " +
+			"RIGHT JOIN lines_have_route_sections ON lines_have_route_sections.route_section_id = route_sections.id " +
+			"LEFT JOIN zones ON route_sections.zone_name = zones.name " +
+			"WHERE line_name = ? " +
+			"ORDER BY section_no ASC ;";
 
 	@Override
 	public BigDecimal getBaseFare(String name) {
@@ -63,7 +73,7 @@ public class LineRepositoryImpl implements LineRepository {
 	}
 
 	@Override
-	public void delete(Line line){
+	public void delete(Line line) {
 		Connection connection = CONNECTION_POOL.getConnection();
 
 		try (PreparedStatement ps = connection.prepareStatement(
@@ -73,6 +83,37 @@ public class LineRepositoryImpl implements LineRepository {
 
 		} catch (SQLException e) {
 			throw new RuntimeException("Unable to delete line.", e);
+		} finally {
+			CONNECTION_POOL.releaseConnection(connection);
+		}
+	}
+
+	@Override
+	public void viewSections(String lineName) {
+		Connection connection = CONNECTION_POOL.getConnection();
+
+		try (PreparedStatement ps = connection.prepareStatement(
+			VIEW_SECTIONS_QUERY)) {
+			ps.setString(1, lineName);
+			ps.executeQuery();
+			ResultSet rs = ps.executeQuery();
+
+			System.out.println("Sections of line " + lineName + ":");
+			while (rs.next()) {
+				System.out.print(new StringBuilder()
+					.append(rs.getString("departure"))
+					.append(" to ")
+					.append(rs.getString("destination"))
+					.append(". Time: ")
+					.append(rs.getInt("minutes"))
+					.append(" minutes. Base fare: ")
+					.append(rs.getBigDecimal("base_fare_one_minute").multiply(rs.getBigDecimal("minutes")))
+					.append(" pln.\n")
+				);
+			}
+
+		} catch (SQLException e) {
+			throw new RuntimeException("Unable to view line sections.", e);
 		} finally {
 			CONNECTION_POOL.releaseConnection(connection);
 		}

@@ -11,4 +11,6 @@ public interface LineService {
 	void create(Line line);
 
 	void delete(Line line);
+
+	void viewSections(String lineName);
 }

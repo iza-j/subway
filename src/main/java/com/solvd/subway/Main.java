@@ -63,7 +63,7 @@ public class Main {
 		JobService jobService = new JobServiceImpl();
 		Job newJob = new Job();
 		newJob.setTitle("controller");
-		jobService.create(newJob);
+//		jobService.create(newJob);
 		jobService.getAll().forEach(j -> System.out.println(j.getTitle()));
 		System.out.println();
 
@@ -102,10 +102,17 @@ public class Main {
 		routeSectionService.getAll().forEach(r -> printDetails(r));
 		System.out.println();
 
+		lineService.viewSections("2");
+		System.out.println();
+		lineService.viewSections("12");
+		System.out.println();
+		lineService.viewSections("18");
+		System.out.println();
+
 		///////////////////////////////////////////////////////////////////////////////////////////////////
 		// mysql HW #4
 
-		// idk what's wrong
+		// SAX parser
 		Discount saxDiscount = parseDiscount();
 		System.out.println(saxDiscount.getName() + " --- " + saxDiscount.getReductionPercentage());
 		System.out.println();
