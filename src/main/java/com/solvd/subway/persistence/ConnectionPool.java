@@ -66,7 +66,7 @@ public class ConnectionPool {
 					throw new RuntimeException("Unable to get connection.", e);
 				}
 			}
-			return connections.removeLast();
+			return connections.remove(connections.size() - 1);
 		}
 	}
 

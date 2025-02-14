@@ -1,5 +1,8 @@
 package com.solvd.subway;
 
+import com.fasterxml.jackson.databind.DatabindException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.solvd.subway.domain.commuteresources.Discount;
 import com.solvd.subway.domain.commuteresources.Passenger;
 import com.solvd.subway.domain.commuteresources.TransitPass;
@@ -10,13 +13,26 @@ import com.solvd.subway.persistence.Config;
 import com.solvd.subway.service.*;
 import com.solvd.subway.service.impl.*;
 import com.solvd.subway.service.parser.JAXBParser;
+import com.solvd.subway.service.parser.JacksonParser;
+import jakarta.xml.bind.DataBindingException;
 import jakarta.xml.bind.JAXBException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
+import static com.solvd.subway.service.Helper.*;
+
+import com.fasterxml.jackson.core.*;
+import com.fasterxml.jackson.core.type.*;
+import com.fasterxml.jackson.databind.*;
+import javax.xml.crypto.Data;
+import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.function.Function;
 
 import static com.solvd.subway.persistence.Config.*;
 import static com.solvd.subway.service.impl.RouteSectionServiceImpl.printDetails;
@@ -25,7 +41,7 @@ import static com.solvd.subway.service.parser.DiscountSAXParser.parseDiscount;
 
 public class Main {
 
-	public static void main(String[] args) throws JAXBException, IOException {
+	public static void main(String[] args) throws JAXBException, IOException, InvocationTargetException, IllegalAccessException {
 
 		// https://launchbylunch.com/posts/2014/Feb/16/sql-naming-conventions/#naming-conventions
 
@@ -48,12 +64,6 @@ public class Main {
 		System.out.println("\n" + Config.class.getClassLoader().getResource("config.properties") + "\n");
 
 		WorkerService workerService = new WorkerServiceImpl();
-		Worker newWorker = new Worker();
-		newWorker.setName("Andrzej DDoSik");
-		workerService.create(newWorker);
-		printDetails(newWorker);
-		workerService.delete(newWorker);
-		System.out.println();
 
 		String oldName = workerService.getById(4, workerService.getAll()).getName();
 		workerService.updateName(4, oldName.concat("-Donosik"));
@@ -77,6 +87,15 @@ public class Main {
 		newLine.setName("42");
 		lineService.create(newLine);
 		lineService.delete(newLine);
+		System.out.println();
+
+		Worker newWorker = new Worker();
+		newWorker.setName("Andrzej DDoSik");
+		newWorker.setJob(newJob);
+		newWorker.setLine(newLine);
+		workerService.create(newWorker);
+		printDetails(newWorker);
+		workerService.delete(newWorker);
 		System.out.println();
 
 		StationService stationService = new StationServiceImpl();
@@ -211,5 +230,38 @@ public class Main {
 		// unmarshalling
 		printDetails(jaxbParser.unmarshalWorker());
 		System.out.println(jaxbParser.unmarshalPassenger().getName());
+		System.out.println();
+
+		///////////////////////////////////////////////////////////////////////////////////////////////////
+		// jackson HW
+
+		// for jackson import issues: File > Invalidate Caches > Invalidate and Restart
+
+		JacksonParser jacksonParser = new JacksonParser();
+
+		// marshal with jackson
+		List<Object> objectList = new ArrayList<>(Arrays.asList(discount, passenger, transitPass, line, routeSection, station, subway, zone, job, worker));
+		for (Object object : objectList) {
+			try {
+				jacksonParser.marshal(object);
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+		}
+
+		// unmarshal with jackson
+		Subway jacksonSubway = jacksonParser.unmarshalSubway("src/main/resources/json/subway.json");
+		Subway jacksonSubway2 = jacksonParser.unmarshalSubway("src/main/resources/json/my_subway.json");
+		jacksonSubway.getWorkers().forEach(i -> printDetails(i));
+		jacksonSubway2.getWorkers().forEach(i -> printDetails(i));
+
+		///////////////////////////////////////////////////////////////////////////////////////////////////
+		// mybatis HW
+
+		// always set automapping to false
+		// <![CDATA[  use cdata to escape '<', '>', and '&' in xmls  ]]>
+
+		System.out.println(stationService.geById(231));
+
 	}
 }

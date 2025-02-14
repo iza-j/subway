@@ -16,7 +16,18 @@ public class WorkerServiceImpl implements WorkerService {
 	}
 
 	public static void printDetails(Worker w) {
-		System.out.println(w.getId() + " --- " + w.getName() + " --- " + w.getHourlyWage() + " --- " + w.getJob() + " --- " + w.getLine() + " --- " + (w.getStation() != null ? w.getStation().getName() : null));
+		System.out.println(new StringBuilder()
+			.append(w.getId())
+			.append(" --- ")
+			.append(w.getName())
+			.append(" --- ")
+			.append(w.getHourlyWage())
+			.append(" --- ")
+			.append(w.getJob() != null ? w.getJob().getTitle() : null)
+			.append(" --- ")
+			.append(w.getLine() != null ? w.getLine().getName() : null)
+			.append(" --- ")
+			.append((w.getStation() != null ? w.getStation().getName() : null)));
 	}
 
 	@Override
@@ -36,7 +47,7 @@ public class WorkerServiceImpl implements WorkerService {
 	}
 
 	@Override
-	public void create(Worker w){
+	public void create(Worker w) {
 		workerRepository.create(w);
 		System.out.println("Worker added to the database! " + w.getName() + "'s ID is: " + w.getId());
 	}

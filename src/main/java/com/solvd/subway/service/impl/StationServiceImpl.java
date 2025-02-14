@@ -2,7 +2,7 @@ package com.solvd.subway.service.impl;
 
 import com.solvd.subway.domain.networkelements.Station;
 import com.solvd.subway.persistence.StationRepository;
-import com.solvd.subway.persistence.impl.StationRepositoryImpl;
+import com.solvd.subway.persistence.impl2.StationRepositoryImpl2;
 import com.solvd.subway.service.StationService;
 
 import java.util.List;
@@ -12,7 +12,7 @@ public class StationServiceImpl implements StationService {
 	private final StationRepository stationRepository;
 
 	public StationServiceImpl() {
-		this.stationRepository = new StationRepositoryImpl();
+		this.stationRepository = new StationRepositoryImpl2();
 	}
 
 	@Override

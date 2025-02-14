@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.solvd.subway.persistence.StationRepository">
+
+	<!-- ////////////////////////////////////////////////////////////////////////////////////////// -->
+
+	<insert id="create" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
+		INSERT INTO stations (name) VALUES (#{name});
+	</insert>
+
+	<sql id="findJoins">
+		stations s
+	</sql>
+
+	<sql id="findBody">
+		s.id AS station_id,
+		s.name AS station_name
+	</sql>
+
+	<sql id="find">
+		SELECT
+		<include refid="findBody"/>
+		FROM
+		<include refid="findJoins"/>
+	</sql>
+
+	<!-- ////////////////////////////////////////////////////////////////////////////////////////// -->
+
+	<select id="getAll" resultMap="StationResultMap">
+		<include refid="find"/>
+	</select>
+
+	<select id="getById" resultMap="StationResultMap">
+		<include refid="find"/>
+		WHERE id = #{id}
+	</select>
+
+	<!-- ////////////////////////////////////////////////////////////////////////////////////////// -->
+
+	<resultMap id="StationResultMap" type="com.solvd.subway.domain.networkelements.Station" autoMapping="false">
+		<id property="id" column="station_id"/>
+		<result property="name" column="station_name"/>
+	</resultMap>
+
+</mapper>
