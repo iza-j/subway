@@ -32,4 +32,12 @@ public class RouteSectionRepositoryImpl2 implements RouteSectionRepository {
 			repository.updateTime(routeSectionId, minutes);
 		}
 	}
+
+	@Override
+	public RouteSection getById(Integer id) {
+		try (SqlSession session = MybatisSessionHolder.getSqlSessionFactory().openSession(true)) {
+			RouteSectionRepository repository = session.getMapper(RouteSectionRepository.class);
+			return repository.getById(id);
+		}
+	}
 }

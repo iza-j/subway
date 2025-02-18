@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.solvd.subway.persistence.LineRepository">
+
+	<!-- ////////////////////////////////////////////////////////////////////////////////////////// -->
+
+	<insert id="create" keyColumn="name" keyProperty="name" useGeneratedKeys="false">
+		INSERT INTO lines_ (name) VALUE (#{line.name});
+
+		<foreach item="routeSection" index="index" collection="line.routeSections" nullable="true">
+			INSERT INTO lines_have_route_sections (line_name, route_section_id, section_no)
+			VALUES (#{name}, routeSection.getId(), index+1);
+		</foreach>
+	</insert>
+
+	<!-- ////////////////////////////////////////////////////////////////////////////////////////// -->
+
+	<sql id="findBody">
+		rs.id AS route_section_id,
+		rs.departure_station_id AS route_section_departure_station_id,
+		rs.destination_station_id AS route_section_destination_station_id,
+		rs.minutes AS route_section_minutes,
+		rs.zone_name AS route_section_zone_name
+	</sql>
+
+	<sql id="findJoins">
+		route_section rs
+	</sql>
+
+	<select id="getAll" resultMap="LineResultMap">
+		SELECT
+		<include refid="findBody"/>
+		FROM lines_
+		LEFT JOIN lines_have_route_sections lhrs ON lines_.name = lhrs.line_name
+		LEFT JOIN route_sections rs ON lhrs.route_section_id = rs.id
+		LEFT JOIN stations dep ON rs.departure_station_id = dep.id
+		LEFT JOIN stations dest ON rs.destination_station_id = dest.id
+		LEFT JOIN zones ON rs.zone_name = zones.name
+	</select>
+
+	<select id="getByName" resultMap="LineResultMap">
+		SELECT *
+		FROM lines_
+		LEFT JOIN lines_have_route_sections lhrs ON lines_.name = lhrs.line_name
+		LEFT JOIN route_sections rs ON lhrs.route_section_id = rs.id
+		LEFT JOIN stations dep ON rs.departure_station_id = dep.id
+		LEFT JOIN stations dest ON rs.destination_station_id = dest.id
+		LEFT JOIN zones ON rs.zone_name = zones.name
+		WHERE lines_.name = "${name}" ;
+	</select>
+
+	<select id="getBaseFare" resultMap="LineResultMap">
+		SELECT SUM(base_fare_one_minute*minutes) AS base_fare
+		FROM lines_
+		LEFT JOIN lines_have_route_sections lhrs ON lines_.name = lhrs.line_name
+		LEFT JOIN route_sections rs ON lhrs.route_section_id = rs.id
+		LEFT JOIN stations dep ON rs.departure_station_id = dep.id
+		LEFT JOIN stations dest ON rs.destination_station_id = dest.id
+		LEFT JOIN zones ON rs.zone_name = zones.name
+		WHERE lines_.name = "${name}" ;
+	</select>
+
+	<delete id="delete">
+		DELETE FROM lines_ WHERE lines_.name = #{name};
+	</delete>
+
+	<select id="getSections" resultMap="com.solvd.subway.persistence.RouteSectionRepository.RouteSectionResultMap">
+		SELECT
+		rs.id AS route_section_id,
+		rs.departure_station_id AS route_section_departure_station_id,
+		rs.destination_station_id AS route_section_destination_station_id,
+		rs.minutes AS route_section_minutes,
+		rs.zone_name AS route_section_zone_name
+		FROM route_sections rs
+		LEFT JOIN stations AS departure_station ON rs.departure_station_id = departure_station.id
+		LEFT JOIN stations AS destination_station ON rs.destination_station_id = destination_station.id
+		RIGHT JOIN lines_have_route_sections lhrs ON lhrs.route_section_id = rs.id
+		LEFT JOIN zones ON rs.zone_name = zones.name
+		WHERE line_name = #{name}
+		ORDER BY section_no ASC ;
+	</select>
+
+	<!-- ////////////////////////////////////////////////////////////////////////////////////////// -->
+
+	<resultMap id="LineResultMap" type="com.solvd.subway.domain.networkelements.Line" autoMapping="false">
+		<id property="name" column="line_name"/>
+		<collection property="routeSections"
+					ofType="com.solvd.subway.domain.networkelements.RouteSection"
+					resultMap="com.solvd.subway.persistence.RouteSectionRepository.RouteSectionResultMap"/>
+	</resultMap>
+
+</mapper>

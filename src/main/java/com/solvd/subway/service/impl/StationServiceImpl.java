@@ -27,7 +27,7 @@ public class StationServiceImpl implements StationService {
 	}
 
 	@Override
-	public Station geById(Integer id) {
+	public Station getById(Integer id) {
 		return stationRepository.getById(id);
 	}
 }

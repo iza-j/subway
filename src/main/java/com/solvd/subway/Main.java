@@ -1,8 +1,5 @@
 package com.solvd.subway;
 
-import com.fasterxml.jackson.databind.DatabindException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.solvd.subway.domain.commuteresources.Discount;
 import com.solvd.subway.domain.commuteresources.Passenger;
 import com.solvd.subway.domain.commuteresources.TransitPass;
@@ -14,17 +11,8 @@ import com.solvd.subway.service.*;
 import com.solvd.subway.service.impl.*;
 import com.solvd.subway.service.parser.JAXBParser;
 import com.solvd.subway.service.parser.JacksonParser;
-import jakarta.xml.bind.DataBindingException;
 import jakarta.xml.bind.JAXBException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
-import static com.solvd.subway.service.Helper.*;
-
-import com.fasterxml.jackson.core.*;
-import com.fasterxml.jackson.core.type.*;
-import com.fasterxml.jackson.databind.*;
-import javax.xml.crypto.Data;
-import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
@@ -32,9 +20,10 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Function;
+import java.util.Objects;
 
 import static com.solvd.subway.persistence.Config.*;
+import static com.solvd.subway.service.Helper.viewDetails;
 import static com.solvd.subway.service.impl.RouteSectionServiceImpl.printDetails;
 import static com.solvd.subway.service.impl.WorkerServiceImpl.printDetails;
 import static com.solvd.subway.service.parser.DiscountSAXParser.parseDiscount;
@@ -103,13 +92,13 @@ public class Main {
 		newStation.setName("Rynek Łazarski");
 		stationService.create(newStation);
 		stationService.getAll().forEach(s -> System.out.println(s.getId() + ": " + s.getName()));
-		System.out.println(stationService.geById(4).getName());
+		System.out.println(stationService.getById(4).getName());
 		System.out.println();
 
 		RouteSectionService routeSectionService = new RouteSectionServiceImpl();
 		RouteSection newRouteSection = new RouteSection();
-		newRouteSection.setDepartureStation(stationService.geById(14));
-		newRouteSection.setDestinationStation(stationService.geById(15));
+		newRouteSection.setDepartureStation(stationService.getById(14));
+		newRouteSection.setDestinationStation(stationService.getById(15));
 		newRouteSection.setMinutes(2);
 		Zone newZone = new Zone();
 		newZone.setName("A");
@@ -118,7 +107,7 @@ public class Main {
 		printDetails(newRouteSection);
 		routeSectionService.create(newRouteSection);
 		routeSectionService.updateTime(newRouteSection.getId(), 1);
-		routeSectionService.getAll().forEach(r -> printDetails(r));
+		routeSectionService.getAll().stream().filter(Objects::isNull).forEach(r -> printDetails(r));
 		System.out.println();
 
 		lineService.viewSections("2");
@@ -254,6 +243,7 @@ public class Main {
 		Subway jacksonSubway2 = jacksonParser.unmarshalSubway("src/main/resources/json/my_subway.json");
 		jacksonSubway.getWorkers().forEach(i -> printDetails(i));
 		jacksonSubway2.getWorkers().forEach(i -> printDetails(i));
+		System.out.println();
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////
 		// mybatis HW
@@ -261,7 +251,35 @@ public class Main {
 		// always set automapping to false
 		// <![CDATA[  use cdata to escape '<', '>', and '&' in xmls  ]]>
 
-		System.out.println(stationService.geById(231));
+		ZoneService zoneService = new ZoneServiceImpl();
+		for (Zone i : zoneService.getAll()) {
+			viewDetails(i);
+		}
+		System.out.println();
 
+		for (Station i : stationService.getAll()) {
+			viewDetails(i);
+		}
+		System.out.println();
+
+		for (RouteSection i : routeSectionService.getAll()) {
+			System.out.println(new StringBuilder()
+				.append(i.getId())
+				.append(" --- ")
+				.append(i.getDepartureStation().getName())
+				.append(" --- ")
+				.append(i.getDestinationStation().getName())
+				.append(" --- ")
+				.append(i.getMinutes())
+				.append(" --- ")
+				.append(i.getZone())
+			);
+		}
+		System.out.println();
+
+		for (Line i : lineService.getAll()) {
+			System.out.println(i.getName());
+		}
+		System.out.println();
 	}
 }

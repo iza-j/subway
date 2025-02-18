@@ -1,0 +1,46 @@
+{
+  "id" : 17,
+  "name" : "Irena Rooibosik",
+  "hourlyWage" : 99.54,
+  "job" : {
+    "title" : "programmer"
+  },
+  "line" : {
+    "name" : "13",
+    "routeSections" : [ {
+      "id" : 1,
+      "departureStation" : {
+        "id" : 33,
+        "name" : "Rynek Łazarski"
+      },
+      "destinationStation" : {
+        "id" : 45,
+        "name" : "Rondo Starołęka"
+      },
+      "minutes" : 2,
+      "zone" : {
+        "name" : "A",
+        "baseFareOneMinute" : 0.17
+      }
+    }, {
+      "id" : 2,
+      "departureStation" : {
+        "id" : 45,
+        "name" : "Rondo Starołęka"
+      },
+      "destinationStation" : {
+        "id" : 46,
+        "name" : "Rondo Śródka"
+      },
+      "minutes" : 3,
+      "zone" : {
+        "name" : "A",
+        "baseFareOneMinute" : 0.17
+      }
+    } ]
+  },
+  "station" : {
+    "id" : 45,
+    "name" : "Rondo Starołęka"
+  }
+}

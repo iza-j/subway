@@ -20,7 +20,7 @@
 	<mappers>
 		<mapper resource="mapper/StationMapper.xml"/>
 		<mapper resource="mapper/ZoneMapper.xml"/>
-<!--		<mapper resource="mapper/RouteSectionMapper.xml"/>-->
-<!--		<mapper resource="mapper/LineMapper.xml"/>-->
+		<mapper resource="mapper/RouteSectionMapper.xml"/>
+		<mapper resource="mapper/LineMapper.xml"/>
 	</mappers>
 </configuration>

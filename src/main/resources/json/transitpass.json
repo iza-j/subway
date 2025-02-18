@@ -1,0 +1,9 @@
+{
+  "name" : "Yearly A",
+  "outermostZone" : {
+    "name" : "A",
+    "baseFareOneMinute" : 0.17
+  },
+  "numberOfDays" : 366,
+  "price" : 702
+}

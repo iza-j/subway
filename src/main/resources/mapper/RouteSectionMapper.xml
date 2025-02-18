@@ -7,66 +7,69 @@
 
 	<insert id="create" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
 		INSERT INTO route_sections (departure_station_id, destination_station_id, minutes, zone_name)
-		VALUES (#{departure_station_id}, #{destination_station_id}, #{minutes}, #{zone_name});
+		VALUES (#{departureStation.id}, #{destinationStation.id}, #{minutes}, #{zone.name});
 	</insert>
-
-	<sql id="findJoins">
-		route_sections rs
-<!--		LEFT JOIN stations dep ON rs.departure_station_id = dep.id-->
-<!--		LEFT JOIN stations dest ON rs.destination_station_id = dest.id-->
-<!--		LEFT JOIN <include refid="com.solvd.subway.persistence.ZoneRepository.findBody"/>-->
-<!--		ON rs.zone_name = z.name-->
-	</sql>
 
 	<sql id="findBody">
 		rs.id AS route_section_id,
-		rs.departure_station_id AS route_section_departure_station_id
-		rs.destination_station_id AS route_section_destination_station_id
-		rs.minutes AS route_section_minutes
+		rs.departure_station_id AS route_section_departure_station_id,
+		rs.destination_station_id AS route_section_destination_station_id,
+		rs.minutes AS route_section_minutes,
 		rs.zone_name AS route_section_zone_name
 	</sql>
 
-	<sql id="find">
-		SELECT
-		<include refid="findBody"/>
-		FROM
-		<include refid="findJoins"/>
+	<sql id="findJoins">
+		route_sections rs
+		LEFT JOIN stations dep ON rs.departure_station_id = dep.id
+		LEFT JOIN stations dest ON rs.destination_station_id = dest.id
+		LEFT JOIN zones z ON rs.zone_name = z.name
 	</sql>
 
 	<!-- ////////////////////////////////////////////////////////////////////////////////////////// -->
 
-	<select id="selectDepartureStation" resultType="Station">
-		SELECT * FROM stations dep WHERE dep.id = #{id}
-	</select>
-
-	<select id="selectDestinationStation" resultType="Station">
-		SELECT * FROM stations dest WHERE dest.id = #{id}
+	<select id="getById" resultMap="RouteSectionResultMap">
+		SELECT
+		<include refid="findBody"/>
+		FROM
+		<include refid="findJoins"/>
+		WHERE id = #{id}
+		;
 	</select>
 
 	<select id="getAll" resultMap="RouteSectionResultMap">
-		<include refid="find"/>
+		SELECT
+		<include refid="findBody"/>,
+		<include refid="com.solvd.subway.persistence.ZoneRepository.findBody"/>,
+		dep.name AS departure_station_name,
+		dest.name AS destination_station_name
+
+		FROM
+		<include refid="findJoins"/>
+		;
 	</select>
 
 	<select id="updateTime" resultMap="RouteSectionResultMap">
-		UPDATE route_sections SET minutes = #{minutes} WHERE id = WHERE id = #{routeSectionId}
-<!--		"UPDATE route_sections SET minutes = ? WHERE id = ?;")) {-->
-<!--		ps.setInt(1, minutes);-->
-<!--		ps.setInt(2, routeSectionId);-->
+		UPDATE route_sections
+		SET minutes = #{minutes}
+		WHERE id = #{routeSectionId}
+		;
 	</select>
 
 	<!-- ////////////////////////////////////////////////////////////////////////////////////////// -->
 
 	<resultMap id="RouteSectionResultMap" type="com.solvd.subway.domain.networkelements.RouteSection" autoMapping="false">
 		<id property="id" column="route_section_id"/>
-		<association property="departure_station_id" columnPrefix="route_section_"
-					 javaType="Station" select="selectDepartureStation"
-					 resultMap="com.solvd.subway.persistence.StationRepository.StationResultMap"/>
-		<association property="destination_station_id" columnPrefix="route_section_"
-					 javaType="Station" select="selectDestinationStation"
-					 resultMap="com.solvd.subway.persistence.StationRepository.StationResultMap"/>
 		<result property="minutes" column="route_section_minutes"/>
-		<association property="zone" columnPrefix="route_section_"
+
+		<association property="zone"
+					 columnPrefix="zone_"
 					 resultMap="com.solvd.subway.persistence.ZoneRepository.ZoneResultMap"/>
+		<association property="departureStation"
+					 columnPrefix="departure_"
+					 resultMap="com.solvd.subway.persistence.StationRepository.StationResultMap"/>
+		<association property="destinationStation"
+					 columnPrefix="destination_"
+					 resultMap="com.solvd.subway.persistence.StationRepository.StationResultMap"/>
 	</resultMap>
 
 </mapper>

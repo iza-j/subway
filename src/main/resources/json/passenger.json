@@ -1,0 +1,19 @@
+{
+  "id" : 1,
+  "name" : "Michał Dętka",
+  "discount" : {
+    "name" : "Teacher",
+    "reductionPercentage" : 33
+  },
+  "credit" : 27.92,
+  "transitPass" : {
+    "name" : "Yearly A",
+    "outermostZone" : {
+      "name" : "A",
+      "baseFareOneMinute" : 0.17
+    },
+    "numberOfDays" : 366,
+    "price" : 702
+  },
+  "passValidityStartingDay" : "2024-09-274T22:09:00+0000"
+}

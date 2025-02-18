@@ -10,5 +10,5 @@ public interface StationService {
 
 	void create(Station station);
 
-	Station geById(Integer id);
+	Station getById(Integer id);
 }

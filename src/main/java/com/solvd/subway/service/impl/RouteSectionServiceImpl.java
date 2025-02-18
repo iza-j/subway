@@ -2,7 +2,7 @@ package com.solvd.subway.service.impl;
 
 import com.solvd.subway.domain.networkelements.RouteSection;
 import com.solvd.subway.persistence.RouteSectionRepository;
-import com.solvd.subway.persistence.impl.RouteSectionRepositoryImpl;
+import com.solvd.subway.persistence.impl2.RouteSectionRepositoryImpl2;
 import com.solvd.subway.service.RouteSectionService;
 
 import java.util.List;
@@ -12,7 +12,7 @@ public class RouteSectionServiceImpl implements RouteSectionService {
 	private final RouteSectionRepository routeSectionRepository;
 
 	public RouteSectionServiceImpl() {
-		this.routeSectionRepository = new RouteSectionRepositoryImpl();
+		this.routeSectionRepository = new RouteSectionRepositoryImpl2();
 	}
 
 	public static void printDetails(RouteSection r) {
@@ -34,5 +34,10 @@ public class RouteSectionServiceImpl implements RouteSectionService {
 	public void updateTime(Integer routeSectionId, Integer minutes) {
 		routeSectionRepository.updateTime(routeSectionId, minutes);
 		System.out.println("Time updated!");
+	}
+
+	@Override
+	public RouteSection getById(Integer id) {
+		return routeSectionRepository.getById(id);
 	}
 }

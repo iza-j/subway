@@ -11,4 +11,6 @@ public interface RouteSectionService {
 	void create(RouteSection routeSection);
 
 	void updateTime(Integer routeSectionId, Integer minutes);
+
+	RouteSection getById(Integer id);
 }

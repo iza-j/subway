@@ -1,6 +1,7 @@
 package com.solvd.subway.persistence.impl;
 
 import com.solvd.subway.domain.networkelements.Line;
+import com.solvd.subway.domain.networkelements.RouteSection;
 import com.solvd.subway.persistence.ConnectionPool;
 import com.solvd.subway.persistence.LineRepository;
 
@@ -9,6 +10,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.solvd.subway.persistence.impl.RouteSectionRepositoryImpl.mapRows;
 
 public class LineRepositoryImpl implements LineRepository {
 
@@ -89,8 +94,9 @@ public class LineRepositoryImpl implements LineRepository {
 	}
 
 	@Override
-	public void viewSections(String lineName) {
+	public List<RouteSection> getSections(String lineName) {
 		Connection connection = CONNECTION_POOL.getConnection();
+		List<RouteSection> routeSections = new ArrayList<>();
 
 		try (PreparedStatement ps = connection.prepareStatement(
 			VIEW_SECTIONS_QUERY)) {
@@ -98,18 +104,8 @@ public class LineRepositoryImpl implements LineRepository {
 			ps.executeQuery();
 			ResultSet rs = ps.executeQuery();
 
-			System.out.println("Sections of line " + lineName + ":");
 			while (rs.next()) {
-				System.out.print(new StringBuilder()
-					.append(rs.getString("departure"))
-					.append(" to ")
-					.append(rs.getString("destination"))
-					.append(". Time: ")
-					.append(rs.getInt("minutes"))
-					.append(" minutes. Base fare: ")
-					.append(rs.getBigDecimal("base_fare_one_minute").multiply(rs.getBigDecimal("minutes")))
-					.append(" pln.\n")
-				);
+				routeSections = mapRows(rs);
 			}
 
 		} catch (SQLException e) {
@@ -117,5 +113,33 @@ public class LineRepositoryImpl implements LineRepository {
 		} finally {
 			CONNECTION_POOL.releaseConnection(connection);
 		}
+		return routeSections;
+	}
+
+	@Override
+	public Line getByName(String name) {
+		Connection connection = CONNECTION_POOL.getConnection();
+		Line line = new Line();
+
+		try (PreparedStatement ps = connection.prepareStatement(
+			"SELECT * FROM lines_ WHERE name = ?;")) {
+			ps.setString(1, name);
+			ResultSet rs = ps.executeQuery();
+
+			while (rs.next()) {
+				line.setName(name);
+			}
+
+		} catch (SQLException e) {
+			throw new RuntimeException("Unable to delete line.", e);
+		} finally {
+			CONNECTION_POOL.releaseConnection(connection);
+		}
+		return line;
+	}
+
+	@Override
+	public List<Line> getAll() {
+		return new ArrayList<Line>();
 	}
 }

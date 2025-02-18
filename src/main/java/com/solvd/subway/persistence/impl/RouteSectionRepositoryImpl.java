@@ -22,8 +22,8 @@ public class RouteSectionRepositoryImpl implements RouteSectionRepository {
 		routeSection.setMinutes(rs.getInt("minutes"));
 
 		StationService stationService = new StationServiceImpl();
-		Station departureStation = stationService.geById(rs.getInt("departure_station_id"));
-		Station destinationStation = stationService.geById(rs.getInt("destination_station_id"));
+		Station departureStation = stationService.getById(rs.getInt("departure_station_id"));
+		Station destinationStation = stationService.getById(rs.getInt("destination_station_id"));
 		routeSection.setDepartureStation(departureStation);
 		routeSection.setDestinationStation(destinationStation);
 
@@ -95,5 +95,10 @@ public class RouteSectionRepositoryImpl implements RouteSectionRepository {
 		} finally {
 			CONNECTION_POOL.releaseConnection(connection);
 		}
+	}
+
+	@Override
+	public RouteSection getById(Integer id) {
+		return new RouteSection();
 	}
 }

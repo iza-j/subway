@@ -1,0 +1,16 @@
+{
+  "id" : 1,
+  "departureStation" : {
+    "id" : 33,
+    "name" : "Rynek Łazarski"
+  },
+  "destinationStation" : {
+    "id" : 45,
+    "name" : "Rondo Starołęka"
+  },
+  "minutes" : 2,
+  "zone" : {
+    "name" : "A",
+    "baseFareOneMinute" : 0.17
+  }
+}
