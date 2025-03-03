@@ -1,5 +1,6 @@
 package com.solvd.subway.service.parser;
 
+import com.solvd.subway.domain.commuteresources.Discount;
 import com.solvd.subway.domain.commuteresources.Passenger;
 import com.solvd.subway.domain.workers.Worker;
 import jakarta.xml.bind.JAXBContext;
@@ -10,7 +11,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
-public class JAXBParser {
+public class JAXBParser implements Parser {
 
 	public <T> void marshal(T myObject) throws JAXBException {
 		String fileName = "src/main/resources/" + myObject.getClass().getSimpleName().toLowerCase() + ".xml";
@@ -30,5 +31,11 @@ public class JAXBParser {
 		String fileName = "src/main/resources/passenger.xml";
 		JAXBContext context = JAXBContext.newInstance(Passenger.class);
 		return (Passenger) context.createUnmarshaller().unmarshal(new FileReader(fileName));
+	}
+
+	@Override
+	public Discount unmarshalDiscount(String fileName) throws JAXBException, IOException {
+		JAXBContext context = JAXBContext.newInstance(Passenger.class);
+		return (Discount) context.createUnmarshaller().unmarshal(new FileReader(fileName));
 	}
 }

@@ -3,6 +3,7 @@ package com.solvd.subway;
 import com.solvd.subway.domain.commuteresources.Discount;
 import com.solvd.subway.domain.commuteresources.Passenger;
 import com.solvd.subway.domain.commuteresources.TransitPass;
+import com.solvd.subway.domain.listenermanager.EventManager;
 import com.solvd.subway.domain.networkelements.*;
 import com.solvd.subway.domain.workers.Job;
 import com.solvd.subway.domain.workers.Worker;
@@ -12,6 +13,9 @@ import com.solvd.subway.service.impl.*;
 import com.solvd.subway.service.parser.DiscountSAXParser;
 import com.solvd.subway.service.parser.JAXBParser;
 import com.solvd.subway.service.parser.JacksonParser;
+import com.solvd.subway.service.parser.Parser;
+import com.solvd.subway.service.parser.factory.ParserFactory;
+import com.solvd.subway.service.parser.factory.abstractfactory.ParserFactoryProducer;
 import jakarta.xml.bind.JAXBException;
 
 import java.io.IOException;
@@ -192,7 +196,7 @@ public class Main {
 		jaxbParser.marshal(routeSection2);
 
 		// Line
-		Line line = new Line();
+		Line line =	new Line();
 		line.setName("13");
 		line.setRouteSections(new ArrayList<>(Arrays.asList(routeSection, routeSection2)));
 		jaxbParser.marshal(line);
@@ -285,5 +289,36 @@ public class Main {
 		worker1.setName("Zygmunt Kłosik");
 		worker1.setJob(job);
 		workerService.create(worker1);
+
+		///////////////////////////////////////////////////////////////////////////////////////////////////
+		// design patterns HW
+
+		// builder
+		Passenger passenger2 = Passenger.builder()
+			.name("Genowefa Kolosik")
+			.discount(discount)
+			.transitPass(transitPass)
+			.passValidityStartingDay(Date.valueOf("2025-07-10"))
+			.build();
+
+		Worker worker2 = Worker.builder()
+			.name("Lolo Chaosik")
+			.hourlyWage(BigDecimal.valueOf(42.0))
+			.job(job)
+			.build();
+
+		// abstract factory + factory
+		ParserFactory jsonParserFactory = ParserFactoryProducer.getFactory("json");
+		ParserFactory xmlParserFactory = ParserFactoryProducer.getFactory("xml");
+
+		Parser jacksonParser1 = jsonParserFactory.createParser("jackson");
+		Parser jaxbParser1 = xmlParserFactory.createParser("jaxb");
+		Parser saxParser1 = xmlParserFactory.createParser("sax");
+
+		Discount jacksonDiscount1 = jacksonParser1.unmarshalDiscount("src/main/resources/json/discount.json");
+		Discount jaxbDiscount1 = jaxbParser1.unmarshalDiscount("src/main/resources/discount.xml");
+		Discount saxDiscount1 = saxParser1.unmarshalDiscount("src/main/resources/discount.xml");
+
+		System.out.println();
 	}
 }

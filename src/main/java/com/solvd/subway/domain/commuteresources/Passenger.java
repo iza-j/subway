@@ -30,6 +30,10 @@ public class Passenger {
 	@JsonFormat(pattern = "YYYY-MM-DD'T'HH:MM:SSZ") // ISO 8601
 	private Date passValidityStartingDay;
 
+	public static Builder builder() {
+		return new Passenger.Builder(new Passenger());
+	}
+
 	@JsonGetter
 	public Integer getId() {
 		return id;
@@ -88,5 +92,43 @@ public class Passenger {
 	@JsonSetter
 	public void setPassValidityStartingDay(Date passValidityStartingDay) {
 		this.passValidityStartingDay = passValidityStartingDay;
+	}
+
+	public static class Builder {
+
+		private final Passenger passenger;
+
+		public Builder(Passenger passenger) {
+			this.passenger = passenger;
+		}
+
+		public Builder name(String name) {
+			this.passenger.name = name;
+			return this;
+		}
+
+		public Builder discount(Discount discount) {
+			this.passenger.discount = discount;
+			return this;
+		}
+
+		public Builder credit(BigDecimal credit) {
+			this.passenger.credit = credit;
+			return this;
+		}
+
+		public Builder transitPass(TransitPass transitPass) {
+			this.passenger.transitPass = transitPass;
+			return this;
+		}
+
+		public Builder passValidityStartingDay(Date passValidityStartingDay) {
+			this.passenger.passValidityStartingDay = passValidityStartingDay;
+			return this;
+		}
+
+		public Passenger build() {
+			return passenger;
+		}
 	}
 }

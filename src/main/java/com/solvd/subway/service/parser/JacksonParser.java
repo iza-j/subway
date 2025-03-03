@@ -1,6 +1,7 @@
 package com.solvd.subway.service.parser;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.solvd.subway.domain.commuteresources.Discount;
 import com.solvd.subway.domain.networkelements.Subway;
 import com.solvd.subway.domain.workers.Worker;
 
@@ -8,7 +9,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
-public class JacksonParser {
+public class JacksonParser implements Parser {
 
 	public <T> void marshal(T someObject) throws IOException {
 		String fileName = "src/main/resources/json/" + someObject.getClass().getSimpleName().toLowerCase() + ".json";
@@ -25,5 +26,11 @@ public class JacksonParser {
 	public Subway unmarshalSubway(String fileName) throws IOException {
 		ObjectMapper objectMapper = new ObjectMapper();
 		return objectMapper.readValue(new FileReader(fileName), Subway.class);
+	}
+
+	@Override
+	public Discount unmarshalDiscount(String fileName) throws IOException {
+		ObjectMapper objectMapper = new ObjectMapper();
+		return objectMapper.readValue(new FileReader(fileName), Discount.class);
 	}
 }
