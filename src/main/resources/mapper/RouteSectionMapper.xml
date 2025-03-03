@@ -3,56 +3,58 @@
 
 <mapper namespace="com.solvd.subway.persistence.RouteSectionRepository">
 
+	<sql id="selectWhat">
+		<!-- id -->
+		rs.id AS route_section_id,
+		<!-- departureStation -->
+		dep.id AS departure_station_id,
+		dep.name AS departure_station_name,
+		<!-- destinationStation -->
+		dest.id AS destination_station_id,
+		dest.name AS destination_station_name,
+		<!-- minutes -->
+		rs.minutes AS route_section_minutes,
+		<!-- zone -->
+		<include refid="com.solvd.subway.persistence.ZoneRepository.selectWhat"/>
+	</sql>
+
+	<sql id="fromWhere">
+		route_sections rs
+		<include refid="joinNecessary"/>
+	</sql>
+
+	<sql id="joinNecessary">
+		LEFT JOIN stations dep ON rs.departure_station_id = dep.id
+		LEFT JOIN stations dest ON rs.destination_station_id = dest.id
+		LEFT JOIN zones ON rs.zone_name = zones.name
+	</sql>
+
 	<!-- ////////////////////////////////////////////////////////////////////////////////////////// -->
 
 	<insert id="create" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
 		INSERT INTO route_sections (departure_station_id, destination_station_id, minutes, zone_name)
-		VALUES (#{departureStation.id}, #{destinationStation.id}, #{minutes}, #{zone.name});
+		VALUES (${routeSection.departureStation.id}, ${routeSection.destinationStation.id}, ${routeSection.minutes}, "${routeSection.zone.name}")
 	</insert>
-
-	<sql id="findBody">
-		rs.id AS route_section_id,
-		rs.departure_station_id AS route_section_departure_station_id,
-		rs.destination_station_id AS route_section_destination_station_id,
-		rs.minutes AS route_section_minutes,
-		rs.zone_name AS route_section_zone_name
-	</sql>
-
-	<sql id="findJoins">
-		route_sections rs
-		LEFT JOIN stations dep ON rs.departure_station_id = dep.id
-		LEFT JOIN stations dest ON rs.destination_station_id = dest.id
-		LEFT JOIN zones z ON rs.zone_name = z.name
-	</sql>
-
-	<!-- ////////////////////////////////////////////////////////////////////////////////////////// -->
-
-	<select id="getById" resultMap="RouteSectionResultMap">
-		SELECT
-		<include refid="findBody"/>
-		FROM
-		<include refid="findJoins"/>
-		WHERE id = #{id}
-		;
-	</select>
 
 	<select id="getAll" resultMap="RouteSectionResultMap">
 		SELECT
-		<include refid="findBody"/>,
-		<include refid="com.solvd.subway.persistence.ZoneRepository.findBody"/>,
-		dep.name AS departure_station_name,
-		dest.name AS destination_station_name
-
+		<include refid="selectWhat"/>
 		FROM
-		<include refid="findJoins"/>
-		;
+		<include refid="fromWhere"/>
 	</select>
 
-	<select id="updateTime" resultMap="RouteSectionResultMap">
+	<select id="getById" resultMap="RouteSectionResultMap">
+		SELECT
+		<include refid="selectWhat"/>
+		FROM
+		<include refid="fromWhere"/>
+		WHERE rs.id = #{id}
+	</select>
+
+	<select id="updateTime">
 		UPDATE route_sections
 		SET minutes = #{minutes}
 		WHERE id = #{routeSectionId}
-		;
 	</select>
 
 	<!-- ////////////////////////////////////////////////////////////////////////////////////////// -->
@@ -60,9 +62,7 @@
 	<resultMap id="RouteSectionResultMap" type="com.solvd.subway.domain.networkelements.RouteSection" autoMapping="false">
 		<id property="id" column="route_section_id"/>
 		<result property="minutes" column="route_section_minutes"/>
-
 		<association property="zone"
-					 columnPrefix="zone_"
 					 resultMap="com.solvd.subway.persistence.ZoneRepository.ZoneResultMap"/>
 		<association property="departureStation"
 					 columnPrefix="departure_"

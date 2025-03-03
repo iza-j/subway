@@ -16,4 +16,6 @@ public interface LineService {
 	void viewSections(String lineName);
 
 	List<Line> getAll();
+
+	Line getByName(String name);
 }

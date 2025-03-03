@@ -3,37 +3,37 @@
 
 <mapper namespace="com.solvd.subway.persistence.StationRepository">
 
+	<sql id="selectWhat">
+		<!-- id -->
+		stations.id AS station_id,
+		<!-- name -->
+		stations.name AS station_name
+	</sql>
+
+	<sql id="fromWhere">
+		stations
+	</sql>
+
 	<!-- ////////////////////////////////////////////////////////////////////////////////////////// -->
 
 	<insert id="create" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
-		INSERT INTO stations (name) VALUES (#{name});
+		INSERT INTO stations (name)
+		VALUES (#{station.name})
 	</insert>
 
-	<sql id="findJoins">
-		stations s
-	</sql>
-
-	<sql id="findBody">
-		s.id AS station_id,
-		s.name AS station_name
-	</sql>
-
-	<sql id="find">
-		SELECT
-		<include refid="findBody"/>
-		FROM
-		<include refid="findJoins"/>
-	</sql>
-
-	<!-- ////////////////////////////////////////////////////////////////////////////////////////// -->
-
 	<select id="getAll" resultMap="StationResultMap">
-		<include refid="find"/>
+		SELECT
+		<include refid="selectWhat"/>
+		FROM
+		<include refid="fromWhere"/>
 	</select>
 
 	<select id="getById" resultMap="StationResultMap">
-		<include refid="find"/>
-		WHERE id = #{id}
+		SELECT
+		<include refid="selectWhat"/>
+		FROM
+		<include refid="fromWhere"/>
+		WHERE stations.id = #{id}
 	</select>
 
 	<!-- ////////////////////////////////////////////////////////////////////////////////////////// -->

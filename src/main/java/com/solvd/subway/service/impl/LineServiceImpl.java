@@ -63,4 +63,9 @@ public class LineServiceImpl implements LineService {
 	public List<Line> getAll() {
 		return lineRepository.getAll();
 	}
+
+	@Override
+	public Line getByName(String name) {
+		return lineRepository.getByName(name);
+	}
 }

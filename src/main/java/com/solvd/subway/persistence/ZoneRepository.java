@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface ZoneRepository {
 
-	void create(Zone zone);
+	void create(@Param("zone") Zone zone);
 
 	Zone getById(@Param("name") String name);
 

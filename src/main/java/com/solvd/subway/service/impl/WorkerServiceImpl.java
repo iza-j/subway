@@ -2,7 +2,7 @@ package com.solvd.subway.service.impl;
 
 import com.solvd.subway.domain.workers.Worker;
 import com.solvd.subway.persistence.WorkerRepository;
-import com.solvd.subway.persistence.impl.WorkerRepositoryImpl;
+import com.solvd.subway.persistence.impl2.WorkerRepositoryImpl2;
 import com.solvd.subway.service.WorkerService;
 
 import java.util.List;
@@ -12,7 +12,7 @@ public class WorkerServiceImpl implements WorkerService {
 	private final WorkerRepository workerRepository;
 
 	public WorkerServiceImpl() {
-		this.workerRepository = new WorkerRepositoryImpl();
+		this.workerRepository = new WorkerRepositoryImpl2();
 	}
 
 	public static void printDetails(Worker w) {

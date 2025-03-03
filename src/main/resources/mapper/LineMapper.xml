@@ -3,81 +3,67 @@
 
 <mapper namespace="com.solvd.subway.persistence.LineRepository">
 
+	<sql id="selectWhat">
+		<!-- name -->
+		lines_.name AS line_name,
+		<!-- routeSections -->
+		<include refid="com.solvd.subway.persistence.RouteSectionRepository.selectWhat"/>
+	</sql>
+
+	<sql id="fromWhere">
+		lines_
+		<include refid="joinNecessary"/>
+	</sql>
+
+	<sql id="joinNecessary">
+		LEFT JOIN lines_have_route_sections lhrs ON lines_.name = lhrs.line_name
+		LEFT JOIN route_sections rs ON lhrs.route_section_id = rs.id
+		<include refid="com.solvd.subway.persistence.RouteSectionRepository.joinNecessary"/>
+	</sql>
+
 	<!-- ////////////////////////////////////////////////////////////////////////////////////////// -->
 
 	<insert id="create" keyColumn="name" keyProperty="name" useGeneratedKeys="false">
-		INSERT INTO lines_ (name) VALUE (#{line.name});
-
-		<foreach item="routeSection" index="index" collection="line.routeSections" nullable="true">
-			INSERT INTO lines_have_route_sections (line_name, route_section_id, section_no)
-			VALUES (#{name}, routeSection.getId(), index+1);
-		</foreach>
+		INSERT INTO lines_ (name) VALUES ("${line.name}")
+		;
+<!--		<foreach item="routeSection" index="index" collection="line.routeSections" separator=";" nullable="true">-->
+<!--			INSERT INTO lines_have_route_sections (line_name, route_section_id, section_no)-->
+<!--			VALUES ("${line.name}", ${routeSection.id}, ${index+1})-->
+<!--		</foreach>-->
 	</insert>
-
-	<!-- ////////////////////////////////////////////////////////////////////////////////////////// -->
-
-	<sql id="findBody">
-		rs.id AS route_section_id,
-		rs.departure_station_id AS route_section_departure_station_id,
-		rs.destination_station_id AS route_section_destination_station_id,
-		rs.minutes AS route_section_minutes,
-		rs.zone_name AS route_section_zone_name
-	</sql>
-
-	<sql id="findJoins">
-		route_section rs
-	</sql>
 
 	<select id="getAll" resultMap="LineResultMap">
 		SELECT
-		<include refid="findBody"/>
-		FROM lines_
-		LEFT JOIN lines_have_route_sections lhrs ON lines_.name = lhrs.line_name
-		LEFT JOIN route_sections rs ON lhrs.route_section_id = rs.id
-		LEFT JOIN stations dep ON rs.departure_station_id = dep.id
-		LEFT JOIN stations dest ON rs.destination_station_id = dest.id
-		LEFT JOIN zones ON rs.zone_name = zones.name
+		<include refid="selectWhat"/>
+		FROM
+		<include refid="fromWhere"/>
 	</select>
 
 	<select id="getByName" resultMap="LineResultMap">
-		SELECT *
-		FROM lines_
-		LEFT JOIN lines_have_route_sections lhrs ON lines_.name = lhrs.line_name
-		LEFT JOIN route_sections rs ON lhrs.route_section_id = rs.id
-		LEFT JOIN stations dep ON rs.departure_station_id = dep.id
-		LEFT JOIN stations dest ON rs.destination_station_id = dest.id
-		LEFT JOIN zones ON rs.zone_name = zones.name
-		WHERE lines_.name = "${name}" ;
+		SELECT
+		<include refid="selectWhat"/>
+		FROM
+		<include refid="fromWhere"/>
+		WHERE lines_.name = "${name}"
 	</select>
 
 	<select id="getBaseFare" resultMap="LineResultMap">
 		SELECT SUM(base_fare_one_minute*minutes) AS base_fare
-		FROM lines_
-		LEFT JOIN lines_have_route_sections lhrs ON lines_.name = lhrs.line_name
-		LEFT JOIN route_sections rs ON lhrs.route_section_id = rs.id
-		LEFT JOIN stations dep ON rs.departure_station_id = dep.id
-		LEFT JOIN stations dest ON rs.destination_station_id = dest.id
-		LEFT JOIN zones ON rs.zone_name = zones.name
-		WHERE lines_.name = "${name}" ;
+		FROM
+		<include refid="fromWhere"/>
+		WHERE lines_.name = "${name}"
 	</select>
 
 	<delete id="delete">
-		DELETE FROM lines_ WHERE lines_.name = #{name};
+		DELETE lines_ FROM lines_ WHERE lines_.name = #{name}
 	</delete>
 
 	<select id="getSections" resultMap="com.solvd.subway.persistence.RouteSectionRepository.RouteSectionResultMap">
 		SELECT
-		rs.id AS route_section_id,
-		rs.departure_station_id AS route_section_departure_station_id,
-		rs.destination_station_id AS route_section_destination_station_id,
-		rs.minutes AS route_section_minutes,
-		rs.zone_name AS route_section_zone_name
-		FROM route_sections rs
-		LEFT JOIN stations AS departure_station ON rs.departure_station_id = departure_station.id
-		LEFT JOIN stations AS destination_station ON rs.destination_station_id = destination_station.id
-		RIGHT JOIN lines_have_route_sections lhrs ON lhrs.route_section_id = rs.id
-		LEFT JOIN zones ON rs.zone_name = zones.name
-		WHERE line_name = #{name}
+		<include refid="com.solvd.subway.persistence.RouteSectionRepository.selectWhat"/>
+		FROM
+		<include refid="fromWhere"/>
+		WHERE line_name = #{lineName}
 		ORDER BY section_no ASC ;
 	</select>
 

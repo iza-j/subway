@@ -140,6 +140,7 @@ public class LineRepositoryImpl implements LineRepository {
 
 	@Override
 	public List<Line> getAll() {
+		// i've moved on to mybatis
 		return new ArrayList<Line>();
 	}
 }

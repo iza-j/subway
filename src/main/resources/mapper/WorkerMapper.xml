@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.solvd.subway.persistence.WorkerRepository">
+
+	<sql id="selectWhat">
+		<!-- id -->
+		workers.id AS worker_id,
+		<!-- name -->
+		workers.name AS worker_name,
+		<!-- hourlyWage -->
+		workers.hourly_wage AS worker_hourly_wage,
+		<!-- job -->
+		workers.job_title AS worker_job_title,
+		<include refid="com.solvd.subway.persistence.JobRepository.selectWhat"/>,
+		<!-- line -->
+		workers.station_id AS worker_station_id,
+		<include refid="com.solvd.subway.persistence.LineRepository.selectWhat"/>,
+		<!-- station -->
+		<include refid="com.solvd.subway.persistence.StationRepository.selectWhat"/>
+	</sql>
+
+	<sql id="fromWhere">
+		workers
+		<include refid="joinNecessary"/>
+	</sql>
+
+	<sql id="joinNecessary">
+		LEFT JOIN jobs ON workers.job_title = jobs.title
+		LEFT JOIN lines_ ON workers.line_name = lines_.name
+		<include refid="com.solvd.subway.persistence.LineRepository.joinNecessary"/>
+		LEFT JOIN stations ON workers.station_id = stations.id
+	</sql>
+
+	<!-- ////////////////////////////////////////////////////////////////////////////////////////// -->
+
+	<insert id="create" keyColumn="name" keyProperty="name" useGeneratedKeys="true">
+		INSERT INTO workers (
+		<if test='worker.hourlyWage != null'>
+			hourly_wage,
+		</if>
+		<if test='worker.job.title != null'>
+			job_title,
+		</if>
+		<if test='worker.line.name != null'>
+			line_name,
+		</if>
+		<if test='worker.station.id != null'>
+			station_id,
+		</if>
+		name)
+
+		VALUES (
+		<if test='worker.hourlyWage != null'>
+			${worker.hourlyWage},
+		</if>
+		<if test='worker.job.title != null'>
+			"${worker.job.title}",
+		</if>
+		<if test='worker.line.name != null'>
+			"${worker.line.name}",
+		</if>
+		<if test='worker.station.id != null'>
+			${worker.station.id},
+		</if>
+		"${worker.name}")
+	</insert>
+
+	<select id="getAll" resultMap="WorkerResultMap">
+		SELECT
+		<include refid="selectWhat"/>
+		FROM
+		<include refid="fromWhere"/>
+	</select>
+
+	<delete id="delete">
+		DELETE workers FROM workers WHERE workers.id = #{worker.id}
+	</delete>
+
+	<select id="updateName">
+		UPDATE workers
+		SET name = #{name}
+		WHERE id = #{id}
+	</select>
+
+	<!-- ////////////////////////////////////////////////////////////////////////////////////////// -->
+
+	<resultMap id="WorkerResultMap" type="com.solvd.subway.domain.workers.Worker" autoMapping="false">
+		<id property="id" column="worker_id"/>
+		<result property="name" column="worker_name"/>
+		<result property="hourlyWage" column="worker_hourly_wage"/>
+		<association property="job"
+					 javaType="com.solvd.subway.domain.workers.Job"
+					 resultMap="com.solvd.subway.persistence.JobRepository.JobResultMap"/>
+		<association property="line"
+					 javaType="com.solvd.subway.domain.networkelements.Line"
+					 resultMap="com.solvd.subway.persistence.LineRepository.LineResultMap"/>
+		<association property="station"
+					 resultMap="com.solvd.subway.persistence.StationRepository.StationResultMap"/>
+	</resultMap>
+
+</mapper>

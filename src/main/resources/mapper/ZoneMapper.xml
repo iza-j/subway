@@ -3,39 +3,37 @@
 
 <mapper namespace="com.solvd.subway.persistence.ZoneRepository">
 
+	<sql id="selectWhat">
+		<!-- name -->
+		zones.name AS zone_name,
+		<!-- baseFareOneMinute -->
+		zones.base_fare_one_minute AS zone_base_fare_one_minute
+	</sql>
+
+	<sql id="fromWhere">
+		zones
+	</sql>
+
 	<!-- ////////////////////////////////////////////////////////////////////////////////////////// -->
 
 	<insert id="create" keyColumn="name" keyProperty="name" useGeneratedKeys="false">
-		INSERT INTO zones (name, base_fare_one_minute) VALUES (#{name}, #{baseFareOneMinute});
+		INSERT INTO zones (name, base_fare_one_minute)
+		VALUES ("${zone.name}", ${zone.baseFareOneMinute})
 	</insert>
 
-	<sql id="findBody">
-		z.name AS zone_name,
-		z.base_fare_one_minute AS zone_base_fare_one_minute
-	</sql>
-
-	<sql id="findJoins">
-		zones z
-	</sql>
-
-	<sql id="find">
-		SELECT
-		<include refid="findBody"/>
-		FROM
-		<include refid="findJoins"/>
-		;
-	</sql>
-
-	<!-- ////////////////////////////////////////////////////////////////////////////////////////// -->
-
 	<select id="getAll" resultMap="ZoneResultMap">
-		<include refid="find"/>
+		SELECT
+		<include refid="selectWhat"/>
+		FROM
+		<include refid="fromWhere"/>
 	</select>
 
 	<select id="getById" resultMap="ZoneResultMap">
-		SELECT *
-		FROM zones
-		WHERE name = #{name}
+		SELECT
+		<include refid="selectWhat"/>
+		FROM
+		<include refid="fromWhere"/>
+		WHERE zones.name = #{name}
 	</select>
 
 	<!-- ////////////////////////////////////////////////////////////////////////////////////////// -->

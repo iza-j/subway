@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.solvd.subway.persistence.JobRepository">
+
+	<sql id="selectWhat">
+		<!-- title -->
+		jobs.title AS job_title
+	</sql>
+
+	<sql id="fromWhere">
+		jobs
+	</sql>
+
+	<!-- ////////////////////////////////////////////////////////////////////////////////////////// -->
+
+	<insert id="create" keyColumn="name" keyProperty="name" useGeneratedKeys="false">
+		INSERT INTO jobs (title)
+		VALUES ("${job.title}")
+	</insert>
+
+	<select id="getAll" resultMap="JobResultMap">
+		SELECT
+		<include refid="selectWhat"/>
+		FROM
+		<include refid="fromWhere"/>
+	</select>
+
+	<!-- ////////////////////////////////////////////////////////////////////////////////////////// -->
+
+	<resultMap id="JobResultMap" type="com.solvd.subway.domain.workers.Job" autoMapping="false">
+		<id property="title" column="job_title"/>
+	</resultMap>
+
+</mapper>

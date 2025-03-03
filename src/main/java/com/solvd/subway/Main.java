@@ -9,12 +9,12 @@ import com.solvd.subway.domain.workers.Worker;
 import com.solvd.subway.persistence.Config;
 import com.solvd.subway.service.*;
 import com.solvd.subway.service.impl.*;
+import com.solvd.subway.service.parser.DiscountSAXParser;
 import com.solvd.subway.service.parser.JAXBParser;
 import com.solvd.subway.service.parser.JacksonParser;
 import jakarta.xml.bind.JAXBException;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.ArrayList;
@@ -23,14 +23,12 @@ import java.util.List;
 import java.util.Objects;
 
 import static com.solvd.subway.persistence.Config.*;
-import static com.solvd.subway.service.Helper.viewDetails;
 import static com.solvd.subway.service.impl.RouteSectionServiceImpl.printDetails;
 import static com.solvd.subway.service.impl.WorkerServiceImpl.printDetails;
-import static com.solvd.subway.service.parser.DiscountSAXParser.parseDiscount;
 
 public class Main {
 
-	public static void main(String[] args) throws JAXBException, IOException, InvocationTargetException, IllegalAccessException {
+	public static void main(String[] args) throws JAXBException, IOException {
 
 		// https://launchbylunch.com/posts/2014/Feb/16/sql-naming-conventions/#naming-conventions
 
@@ -62,7 +60,7 @@ public class Main {
 		JobService jobService = new JobServiceImpl();
 		Job newJob = new Job();
 		newJob.setTitle("controller");
-//		jobService.create(newJob);
+		jobService.create(newJob);
 		jobService.getAll().forEach(j -> System.out.println(j.getTitle()));
 		System.out.println();
 
@@ -81,7 +79,7 @@ public class Main {
 		Worker newWorker = new Worker();
 		newWorker.setName("Andrzej DDoSik");
 		newWorker.setJob(newJob);
-		newWorker.setLine(newLine);
+		newWorker.setLine(lineService.getByName("12"));
 		workerService.create(newWorker);
 		printDetails(newWorker);
 		workerService.delete(newWorker);
@@ -121,7 +119,8 @@ public class Main {
 		// mysql HW #4
 
 		// SAX parser
-		Discount saxDiscount = parseDiscount();
+		DiscountSAXParser discountSAXParser = new DiscountSAXParser();
+		Discount saxDiscount = discountSAXParser.unmarshalDiscount("src/main/resources/xml/discount.xml");
 		System.out.println(saxDiscount.getName() + " --- " + saxDiscount.getReductionPercentage());
 		System.out.println();
 
@@ -193,7 +192,7 @@ public class Main {
 		jaxbParser.marshal(routeSection2);
 
 		// Line
-		Line line =	new Line();
+		Line line = new Line();
 		line.setName("13");
 		line.setRouteSections(new ArrayList<>(Arrays.asList(routeSection, routeSection2)));
 		jaxbParser.marshal(line);
@@ -250,36 +249,41 @@ public class Main {
 
 		// always set automapping to false
 		// <![CDATA[  use cdata to escape '<', '>', and '&' in xmls  ]]>
+		// CTRL + SHIFT + U = toggle case in intellij
 
+		// zones
 		ZoneService zoneService = new ZoneServiceImpl();
-		for (Zone i : zoneService.getAll()) {
-			viewDetails(i);
-		}
-		System.out.println();
+		Zone zone1 = zoneService.getById("A");
+		zone1.setName("C");
+		zoneService.create(zone1);
+		List<Zone> zones = zoneService.getAll();
 
-		for (Station i : stationService.getAll()) {
-			viewDetails(i);
-		}
-		System.out.println();
+		// stations
+		Station station1 = stationService.getById(1);
+		stationService.create(station1);
+		List<Station> stations = stationService.getAll();
 
-		for (RouteSection i : routeSectionService.getAll()) {
-			System.out.println(new StringBuilder()
-				.append(i.getId())
-				.append(" --- ")
-				.append(i.getDepartureStation().getName())
-				.append(" --- ")
-				.append(i.getDestinationStation().getName())
-				.append(" --- ")
-				.append(i.getMinutes())
-				.append(" --- ")
-				.append(i.getZone())
-			);
-		}
-		System.out.println();
+		// route sections
+		RouteSection routeSection1 = routeSectionService.getById(1);
+		routeSectionService.create(routeSection1);
+		routeSectionService.updateTime(1, 345);
+		List<RouteSection> routeSections = routeSectionService.getAll();
 
-		for (Line i : lineService.getAll()) {
-			System.out.println(i.getName());
-		}
-		System.out.println();
+		// lines
+		Line line1 = lineService.getByName("12");
+		line1.setName("77");
+		lineService.create(line1);
+		List<Line> lines = lineService.getAll();
+
+		// jobs
+		jobService.create(job);
+		List<Job> jobs = jobService.getAll();
+
+		// workers
+		List<Worker> workers = workerService.getAll();
+		Worker worker1 = workers.get(1);
+		worker1.setName("Zygmunt Kłosik");
+		worker1.setJob(job);
+		workerService.create(worker1);
 	}
 }

@@ -9,9 +9,9 @@ public interface RouteSectionRepository {
 
 	List<RouteSection> getAll();
 
-	void create(RouteSection routeSection);
+	void create(@Param("routeSection") RouteSection routeSection);
 
 	void updateTime(@Param("routeSectionId") Integer routeSectionId, @Param("minutes") Integer minutes);
 
-	RouteSection getById(Integer id);
+	RouteSection getById(@Param("id") Integer id);
 }

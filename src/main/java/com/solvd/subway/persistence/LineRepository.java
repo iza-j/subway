@@ -15,7 +15,7 @@ public interface LineRepository {
 
 	void delete(Line line);
 
-	List<RouteSection> getSections(String lineName);
+	List<RouteSection> getSections(@Param("lineName") String lineName);
 
 	Line getByName(@Param("name") String name);
 
