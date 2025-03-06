@@ -4,9 +4,11 @@ import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonRootName;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.solvd.subway.domain.commuteresources.Passenger;
+import com.solvd.subway.domain.observers.SubwayObserver;
 import com.solvd.subway.domain.workers.Worker;
 import jakarta.xml.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @XmlRootElement
@@ -26,6 +28,23 @@ public class Subway {
 	@XmlElementWrapper(name = "workers")
 	@XmlElement(name = "worker")
 	private List<Worker> workers;
+	@XmlTransient
+	// subject of observation contains a list of its observers
+	private List<SubwayObserver> observers = new ArrayList<>();
+
+	public void addObserver(SubwayObserver observer) {
+		observers.add(observer);
+	}
+
+	public void addLine(Line line) {
+		this.lines.add(line);
+		observers.forEach(observer -> observer.onNewLine(line));
+	}
+
+	public void addWorker(Worker worker) {
+		this.workers.add(worker);
+		observers.forEach(observer -> observer.onNewWorker(worker));
+	}
 
 	@JsonGetter
 	public String getName() {

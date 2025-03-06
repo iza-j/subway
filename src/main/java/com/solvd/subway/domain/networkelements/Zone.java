@@ -13,6 +13,8 @@ import java.math.BigDecimal;
 @JsonRootName(value = "zone")
 public class Zone {
 
+
+
 	@XmlElement
 	private String name;
 	@XmlElement

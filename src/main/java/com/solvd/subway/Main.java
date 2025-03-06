@@ -3,8 +3,9 @@ package com.solvd.subway;
 import com.solvd.subway.domain.commuteresources.Discount;
 import com.solvd.subway.domain.commuteresources.Passenger;
 import com.solvd.subway.domain.commuteresources.TransitPass;
-import com.solvd.subway.domain.listenermanager.EventManager;
 import com.solvd.subway.domain.networkelements.*;
+import com.solvd.subway.domain.observers.PassengersSubwayObserver;
+import com.solvd.subway.domain.observers.WorkersSubwayObserver;
 import com.solvd.subway.domain.workers.Job;
 import com.solvd.subway.domain.workers.Worker;
 import com.solvd.subway.persistence.Config;
@@ -319,6 +320,18 @@ public class Main {
 		Discount jaxbDiscount1 = jaxbParser1.unmarshalDiscount("src/main/resources/discount.xml");
 		Discount saxDiscount1 = saxParser1.unmarshalDiscount("src/main/resources/discount.xml");
 
+		// listener/observer
+		PassengersSubwayObserver passengersSubwayObserver = new PassengersSubwayObserver(subway);
+		passengersSubwayObserver.subscribe(passenger);
+		passengersSubwayObserver.subscribe(passenger2);
+
+		WorkersSubwayObserver workersSubwayObserver = new WorkersSubwayObserver(subway);
+		workersSubwayObserver.subscribe(worker);
+		workersSubwayObserver.subscribe(worker1);
+		workersSubwayObserver.subscribe(worker2);
+
 		System.out.println();
+		subway.addWorker(worker2);
+		subway.addLine(line);
 	}
 }

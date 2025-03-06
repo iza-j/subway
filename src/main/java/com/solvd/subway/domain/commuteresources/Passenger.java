@@ -17,7 +17,6 @@ public class Passenger {
 
 	@XmlElement
 	private Integer id;
-
 	@XmlElement
 	private String name;
 	@XmlElement
